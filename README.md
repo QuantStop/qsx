@@ -23,7 +23,6 @@ Note:
 </div>
 
 <!-- PROJECT LOGO -->
-<br />
 <div align="center">
 
 <h1 align="center">QSX</h1>
@@ -32,37 +31,21 @@ Note:
   <p align="center">
     Library for crypto currency and stock market exchanges.
     <br />
-    <a href="https://github.com/quantstop/quantstopterminal"><strong>Explore the docs »</strong></a>
+    <!--<a href="https://github.com/quantstop/quantstopterminal"><strong>Explore the docs »</strong></a>
     <br />
     <br />
     <a href="https://github.com/quantstop/quantstopterminal">View Demo</a>
     ·
     <a href="https://github.com/quantstop/quantstopterminal/issues">Report Bug</a>
     ·
-    <a href="https://github.com/quantstop/quantstopterminal/issues">Request Feature</a>
+    <a href="https://github.com/quantstop/quantstopterminal/issues">Request Feature</a>-->
   </p>
 </div>
 
 
 
-<!-- TABLE OF CONTENTS -->
-<details>
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a href="#about-the-project">About The Project</a>
-      <ul>
-        <li><a href="#built-with">Built With</a></li>
-      </ul>
-    </li>
-    <li><a href="#getting-started">Getting Started</a></li>
-    <li><a href="#roadmap">Roadmap</a></li>
-    <li><a href="#contributing">Contributing</a></li>
-    <li><a href="#license">License</a></li>
-  </ol>
-</details>
 
-
+<br />
 
 <!-- ABOUT THE PROJECT -->
 ## About The Project
@@ -70,57 +53,39 @@ Note:
 Building financial applications is hard. <br>
 QSX provides a simple way to interact with many exchanges, and ensure a common data structure. 
 
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-### Built With:
-* [Go](https://go.dev/)
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
 
 
 <!-- GETTING STARTED -->
 ## Getting Started
+Import the project:
+```go
+import github.com/quantstop/qsx
+```
 
-### Get the application:
-To download the application visit [Quantstop.com](https://quantstop.com)
-<br>
-To build from source, see our development guides below:
-- [Windows Development Guide](docs/DevelopmentEnvironmentWindows.md)
-- [Linux Development Guide](docs/DevelopmentEnvironmentLinux.md)
-- [MacOS Development Guide](docs/DevelopmentEnvironmentMacOS.md)
+Create an exchange object: <br>
+<i><small>Authentication is only needed for operations that require it. <br>
+You may leave the fields empty as blank input strings.
+</small></i>
 
+```go
+auth := qsx.NewAuth("key", "pass", "secret")
+coinbasepro, err := NewExchange("coinbasepro", auth)
+if err != nil {
+    // handle error
+}
+```
 
+Use the exchange object to perform an action:
 
-
-<!-- USAGE EXAMPLES -->
-### Usage:
-
-Use this space to show useful examples of how a project can be used.
-Additional screenshots, code examples and demos work well in this space. You may also link to more resources.
-
-_For more examples, please refer to the [Documentation](https://example.com)_
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-
-
-
-<!-- ROADMAP -->
-## Roadmap
-
-- [ ] Add Changelog
-- [x] Add back to top links
-- [ ] Finish individual development setup guides
-- [ ] Multi-language Support
-    - [ ] Chinese
-    - [ ] Spanish
-
-See the [open issues](https://github.com/quantstop/quantstopterminal/issues)
-for a full list of proposed features (and known issues).
-
-<p align="right">(<a href="#top">back to top</a>)</p>
+```go
+candles, err := coinbasepro.GetHistoricalCandles(context.TODO(), "BTC-USD")
+if err != nil {
+    // handle error
+}
+for _, candle := range candles {
+    fmt.Println(fmt.Sprintf("Close: %v", candle.Close))
+}
+```
 
 
 
@@ -140,7 +105,6 @@ Don't forget to give the project a star! Thanks again!
 4. Push to the Branch (`git push origin feature/AmazingFeature`)
 5. Open a Pull Request
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
@@ -149,7 +113,6 @@ Don't forget to give the project a star! Thanks again!
 
 Distributed under the MIT License. See the full [LICENSE](LICENSE) for more information.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
 
 
 
