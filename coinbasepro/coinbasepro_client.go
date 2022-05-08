@@ -71,22 +71,45 @@ func NewCoinbasePro(config *core.Config) (core.Qsx, error) {
 
 	rl := rate.NewLimiter(rate.Every(time.Second), 10) // 10 requests per second
 
-	api := core.New(
-		&http.Client{
-			Transport:     &t,
-			CheckRedirect: nil,
-			Jar:           nil,
-			Timeout:       0,
-		},
-		core.Options{
-			ApiURL:  coinbaseproAPIURL,
-			Verbose: false,
-		},
-		rl,
-	)
+	var api *core.Client
+	var ws *core.Dialer
 
-	ws := &core.Dialer{
-		URL: coinbaseproWebsocketURL,
+	if config.Sandbox {
+		api = core.New(
+			&http.Client{
+				Transport:     &t,
+				CheckRedirect: nil,
+				Jar:           nil,
+				Timeout:       0,
+			},
+			core.Options{
+				ApiURL:  coinbaseproSandboxRestAPIURL,
+				Verbose: false,
+			},
+			rl,
+		)
+
+		ws = &core.Dialer{
+			URL: coinbaseproSandboxWebsocketURL,
+		}
+	} else {
+		api = core.New(
+			&http.Client{
+				Transport:     &t,
+				CheckRedirect: nil,
+				Jar:           nil,
+				Timeout:       0,
+			},
+			core.Options{
+				ApiURL:  coinbaseproAPIURL,
+				Verbose: false,
+			},
+			rl,
+		)
+
+		ws = &core.Dialer{
+			URL: coinbaseproWebsocketURL,
+		}
 	}
 
 	return &CoinbasePro{
