@@ -6,7 +6,7 @@ import (
 	"sync"
 )
 
-func (b *Binance) GetHistoricalCandles(ctx context.Context, productID string) ([]core.Candle, error) {
+func (b *Binance) GetHistoricalCandles(ctx context.Context, productID string, granularity string) ([]core.Candle, error) {
 	return nil, nil
 }
 

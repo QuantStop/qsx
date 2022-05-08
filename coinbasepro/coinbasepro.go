@@ -11,10 +11,30 @@ import (
 // This is served as an adapter to the Coinbase client, which adheres strictly to the Coinbase API.
 // Here is where the data is formatted into the common type defined by Qsx.
 
-func (c *CoinbasePro) GetHistoricalCandles(ctx context.Context, productID string) ([]core.Candle, error) {
+func (c *CoinbasePro) GetHistoricalCandles(ctx context.Context, productID string, granularity string) ([]core.Candle, error) {
 	var candles []core.Candle
+
+	g := TimePeriod1Minute
+	switch granularity {
+	case "1m":
+		g = TimePeriod1Minute
+	case "5m":
+		g = TimePeriod5Minutes
+	case "15m":
+		g = TimePeriod15Minutes
+	case "1h":
+		g = TimePeriod1Hour
+	case "6h":
+		g = TimePeriod6Hours
+	case "1d":
+		g = TimePeriod1Day
+	default:
+		g = TimePeriod1Minute
+
+	}
+
 	coinbaseCandles, err := c.GetHistoricRates(ctx, productID, HistoricRateFilter{
-		Granularity: 60,
+		Granularity: g,
 		End:         Time{},
 		Start:       Time{},
 	})

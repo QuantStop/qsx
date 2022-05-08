@@ -10,7 +10,7 @@ type Qsx interface {
 	IsCrypto() bool
 
 	ListProducts(ctx context.Context) ([]Product, error)
-	GetHistoricalCandles(ctx context.Context, productID string) ([]Candle, error)
+	GetHistoricalCandles(ctx context.Context, productID string, granularity string) ([]Candle, error)
 
 	WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, product string, feed interface{}) error
 }
