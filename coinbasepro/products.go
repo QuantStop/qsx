@@ -235,13 +235,13 @@ type ProductStats struct {
 // ListCoinbaseProducts retrieves the list Currency pairs available for trading. The list is not paginated.
 func (c *CoinbasePro) ListCoinbaseProducts(ctx context.Context) ([]Product, error) {
 	var products []Product
-	return products, c.API.Get(ctx, coinbaseproProducts, &products)
+	return products, c.API.Get(ctx, fmt.Sprintf("/%s", coinbaseproProducts), &products)
 }
 
 // GetProduct retrieves the details of a single Currency pair.
 func (c *CoinbasePro) GetProduct(ctx context.Context, productID ProductID) (Product, error) {
 	var product Product
-	path := fmt.Sprintf("%s/%s", coinbaseproProducts, productID)
+	path := fmt.Sprintf("/%s/%s", coinbaseproProducts, productID)
 	return product, c.API.Get(ctx, path, &product)
 }
 
@@ -249,35 +249,35 @@ func (c *CoinbasePro) GetProduct(ctx context.Context, productID ProductID) (Prod
 // OrderBook. Aggregated levels return only one Size for each active Price (as if there was only a single Order for that Size at the level).
 func (c *CoinbasePro) GetAggregatedOrderBook(ctx context.Context, productID ProductID, level BookLevel) (AggregatedOrderBook, error) {
 	var aggregatedBook AggregatedOrderBook
-	path := fmt.Sprintf("%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproOrderbook, core.Query(level.Params()))
+	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproOrderbook, core.Query(level.Params()))
 	return aggregatedBook, c.API.Get(ctx, path, &aggregatedBook)
 }
 
 // GetOrderBook retrieves the full, un-aggregated OrderBook for a Product.
 func (c *CoinbasePro) GetOrderBook(ctx context.Context, productID ProductID) (OrderBook, error) {
 	var book OrderBook
-	path := fmt.Sprintf("%s/%s/%s/?level=3", coinbaseproProducts, productID, coinbaseproOrderbook)
+	path := fmt.Sprintf("/%s/%s/%s/?level=3", coinbaseproProducts, productID, coinbaseproOrderbook)
 	return book, c.API.Get(ctx, path, &book)
 }
 
 // GetProductTicker retrieves snapshot information about the last trade (tick), best bid/ask and 24h volume of a Product.
 func (c *CoinbasePro) GetProductTicker(ctx context.Context, productID ProductID) (ProductTicker, error) {
 	var ticker ProductTicker
-	path := fmt.Sprintf("%s/%s/%s", coinbaseproProducts, productID, coinbaseproTicker)
+	path := fmt.Sprintf("/%s/%s/%s", coinbaseproProducts, productID, coinbaseproTicker)
 	return ticker, c.API.Get(ctx, path, &ticker)
 }
 
 // GetProductTrades retrieves a paginated list of the last trades of a Product.
 func (c *CoinbasePro) GetProductTrades(ctx context.Context, productID ProductID, pagination PaginationParams) (ProductTrades, error) {
 	var trades ProductTrades
-	path := fmt.Sprintf("%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproTrades, core.Query(pagination.Params()))
+	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproTrades, core.Query(pagination.Params()))
 	return trades, c.API.Get(ctx, path, &trades)
 }
 
 // GetProductStats retrieves the 24hr stats for a Product. Volume is in base Currency units. Open, High, and Low are in quote Currency units.
 func (c *CoinbasePro) GetProductStats(ctx context.Context, productID ProductID) (ProductStats, error) {
 	var stats ProductStats
-	path := fmt.Sprintf("%s/%s/%s", coinbaseproProducts, productID, coinbaseproStats)
+	path := fmt.Sprintf("/%s/%s/%s", coinbaseproProducts, productID, coinbaseproStats)
 	return stats, c.API.Get(ctx, path, &stats)
 }
 
@@ -287,7 +287,7 @@ func (c *CoinbasePro) GetProductStats(ctx context.Context, productID ProductID) 
 //   one minute, five minutes, fifteen minutes, one hour, six hours, or one day.
 func (c *CoinbasePro) GetHistoricRates(ctx context.Context, productID string, filter HistoricRateFilter) (HistoricRates, error) {
 	var history HistoricRates
-	path := fmt.Sprintf("%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproHistory, core.Query(filter.Params()))
+	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproHistory, core.Query(filter.Params()))
 	if err := c.API.Get(ctx, path, &history); err != nil {
 		return history, err
 	}
