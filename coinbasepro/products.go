@@ -103,6 +103,23 @@ type AggregatedOrderBook struct {
 	Asks     []AggregatedBookEntry `json:"asks"`
 }
 
+func (a *AggregatedBookEntry) UnmarshalJSON(b []byte) error {
+	var tmp []json.RawMessage
+	if err := json.Unmarshal(b, &tmp); err != nil {
+		return err
+	}
+	if len(tmp) != 3 {
+		return fmt.Errorf("AggregatedBookEntry must have 3 elements, only found %d", len(tmp))
+	}
+	if err := json.Unmarshal(tmp[0], &a.Price); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(tmp[1], &a.Size); err != nil {
+		return err
+	}
+	return json.Unmarshal(tmp[2], &a.NumOrders)
+}
+
 type AggregatedBookEntry struct {
 	Price     string `json:"price"`
 	Size      string `json:"size"`
@@ -113,6 +130,23 @@ type OrderBook struct {
 	Sequence int         `json:"sequence"`
 	Bids     []BookEntry `json:"bids"`
 	Asks     []BookEntry `json:"asks"`
+}
+
+func (b *BookEntry) UnmarshalJSON(raw []byte) error {
+	var tmp []json.RawMessage
+	if err := json.Unmarshal(raw, &tmp); err != nil {
+		return err
+	}
+	if len(tmp) != 3 {
+		return fmt.Errorf("BookEntry must have 3 elements, only found %d", len(tmp))
+	}
+	if err := json.Unmarshal(tmp[0], &b.Price); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(tmp[1], &b.Size); err != nil {
+		return err
+	}
+	return json.Unmarshal(tmp[2], &b.OrderID)
 }
 
 type BookEntry struct {

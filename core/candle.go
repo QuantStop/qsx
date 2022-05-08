@@ -3,10 +3,10 @@ package core
 import "time"
 
 type Candle struct {
-	Close  float64
-	High   float64
-	Low    float64
-	Open   float64
-	Time   time.Time
-	Volume float64
+	Close  float64   `json:"close"`
+	High   float64   `json:"high"`
+	Low    float64   `json:"low"`
+	Open   float64   `json:"open"`
+	Time   time.Time `json:"time"`
+	Volume float64   `json:"volume"`
 }
