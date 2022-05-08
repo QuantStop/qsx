@@ -79,7 +79,7 @@ func NewCoinbasePro(auth *core.Auth) (core.Qsx, error) {
 			Timeout:       0,
 		},
 		core.Options{
-			ApiURL:  coinbaseproSandboxWebsiteURL,
+			ApiURL:  coinbaseproSandboxRestAPIURL,
 			Verbose: false,
 		},
 		rl,
