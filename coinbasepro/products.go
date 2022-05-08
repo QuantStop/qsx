@@ -2,9 +2,11 @@ package coinbasepro
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"github.com/quantstop/qsx/core"
 	"math"
+	"strings"
 	"time"
 )
 
@@ -159,6 +161,21 @@ func (t TimePeriodParam) TimePeriod() TimePeriod {
 	return TimePeriod(int(math.Round(time.Duration(t).Seconds())))
 }
 
+func (t *TimePeriodParam) UnmarshalJSON(b []byte) error {
+	var s string
+	// quote bytes so that marshaller properly scans a number followed by a string as a single string
+	err := json.Unmarshal([]byte(fmt.Sprintf("%q", b)), &s)
+	if err != nil {
+		return err
+	}
+	d, err := time.ParseDuration(strings.ReplaceAll(s, "\"", ""))
+	if err != nil {
+		return err
+	}
+	*t = TimePeriodParam(d)
+	return nil
+}
+
 type TimePeriod int
 
 const (
@@ -183,6 +200,10 @@ type HistoricRates struct {
 	Candles []*Candle
 }
 
+func (h *HistoricRates) UnmarshalJSON(b []byte) error {
+	return json.Unmarshal(b, &h.Candles)
+}
+
 // A Candle is a common representation of a historic rate.
 type Candle struct {
 	Close  float64 `json:"close"`
@@ -191,6 +212,34 @@ type Candle struct {
 	Open   float64 `json:"open"`
 	Time   Time    `json:"time"`
 	Volume float64 `json:"volume"`
+}
+
+func (c *Candle) UnmarshalJSON(b []byte) error {
+	var tmp []json.RawMessage
+	if err := json.Unmarshal(b, &tmp); err != nil {
+		return err
+	}
+	if len(tmp) != 6 {
+		return fmt.Errorf("a Candle must have 6 elements, only found %d", len(tmp))
+	}
+	var rawTime int64
+	if err := json.Unmarshal(tmp[0], &rawTime); err != nil {
+		return err
+	}
+	c.Time = Time(time.Unix(rawTime, 0).UTC())
+	if err := json.Unmarshal(tmp[1], &c.Low); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(tmp[2], &c.High); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(tmp[3], &c.Open); err != nil {
+		return err
+	}
+	if err := json.Unmarshal(tmp[4], &c.Close); err != nil {
+		return err
+	}
+	return json.Unmarshal(tmp[5], &c.Volume)
 }
 
 // ProductTicker holds snapshot information about the last trade (tick), best bid/ask and 24h volume.
@@ -208,6 +257,10 @@ type ProductTicker struct {
 type ProductTrades struct {
 	Trades []*ProductTrade `json:"trades"`
 	Page   *Pagination     `json:"page"`
+}
+
+func (p *ProductTrades) UnmarshalJSON(b []byte) error {
+	return json.Unmarshal(b, &p.Trades)
 }
 
 type ProductTrade struct {
