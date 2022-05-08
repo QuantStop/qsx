@@ -40,7 +40,7 @@ func NewYFinance(auth *core.Auth) (core.Qsx, error) {
 	}, nil
 }
 
-func (y *YFinance) GetHistoricalCandles(ctx context.Context, productID string) ([]core.Candle, error) {
+func (y *YFinance) GetHistoricalCandles(ctx context.Context, productID string, granularity string) ([]core.Candle, error) {
 	return nil, nil
 }
 

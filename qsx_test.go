@@ -10,9 +10,9 @@ import (
 	"testing"
 )
 
-var key = "key"
-var pass = "pass"
-var secret = "secret"
+var key = ""
+var pass = ""
+var secret = ""
 
 func TestNewClient(t *testing.T) {
 	auth := core.NewAuth(key, pass, secret)
@@ -33,12 +33,27 @@ func TestCoinbaseCandles(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	candles, err := coinbasepro.GetHistoricalCandles(context.TODO(), "BTC-USD")
+	candles, err := coinbasepro.GetHistoricalCandles(context.TODO(), "BTC-USD", "1m")
 	if err != nil {
 		t.Error(err)
 	}
 	for _, candle := range candles {
 		t.Logf("Candle Time: %v | Open: %v | High: %v | Low: %v | Close: %v | Volume: %v", candle.Time, candle.Open, candle.High, candle.Low, candle.Close, candle.Volume)
+	}
+}
+
+func TestCoinbaseListProducts(t *testing.T) {
+	auth := core.NewAuth(key, pass, secret)
+	coinbasepro, err := NewExchange("coinbasepro", auth)
+	if err != nil {
+		t.Error(err)
+	}
+	products, err := coinbasepro.ListProducts(context.TODO())
+	if err != nil {
+		t.Error(err)
+	}
+	for _, product := range products {
+		t.Logf("Product: %v", product.ID)
 	}
 }
 
