@@ -10,9 +10,9 @@ import (
 	"testing"
 )
 
-var key = "e47990d20df5c3f6ad2c0e1e098707c6"
-var pass = "xieaj2i7dyf"
-var secret = "WKaRL8SJKbBhDjRCIwIkmWTRB/bwYjLhXz0qcr467xUStUYsrplUuBlkLRInraVu7H4UqfsC1fF1Ybu01EObsQ=="
+var key = ""
+var pass = ""
+var secret = ""
 
 func TestNewClient(t *testing.T) {
 	auth := qsx.NewAuth(key, pass, secret)
