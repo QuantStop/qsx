@@ -10,9 +10,9 @@ import (
 	"testing"
 )
 
-var key = ""
-var pass = ""
-var secret = ""
+var key = "key"
+var pass = "pass"
+var secret = "secret"
 
 func TestNewClient(t *testing.T) {
 	auth := qsx.NewAuth(key, pass, secret)
