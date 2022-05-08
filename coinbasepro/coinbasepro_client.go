@@ -79,14 +79,14 @@ func NewCoinbasePro(auth *core.Auth) (core.Qsx, error) {
 			Timeout:       0,
 		},
 		core.Options{
-			ApiURL:  coinbaseproAPIURL,
+			ApiURL:  coinbaseproSandboxWebsiteURL,
 			Verbose: false,
 		},
 		rl,
 	)
 
 	ws := &core.Dialer{
-		URL: coinbaseproWebsocketURL,
+		URL: coinbaseproSandboxWebsocketURL,
 	}
 
 	return &CoinbasePro{
