@@ -15,10 +15,13 @@ var pass = ""
 var secret = ""
 
 func TestNewClient(t *testing.T) {
-	auth := core.NewAuth(key, pass, secret)
+	config := &core.Config{
+		Auth:    core.NewAuth(key, pass, secret),
+		Sandbox: true,
+	}
 
 	for _, x := range core.SupportedExchanges {
-		exchange, err := NewExchange(x, auth)
+		exchange, err := NewExchange(x, config)
 		if err != nil {
 			t.Error(err)
 		}
@@ -28,8 +31,11 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestCoinbaseCandles(t *testing.T) {
-	auth := core.NewAuth(key, pass, secret)
-	coinbasepro, err := NewExchange("coinbasepro", auth)
+	config := &core.Config{
+		Auth:    core.NewAuth(key, pass, secret),
+		Sandbox: true,
+	}
+	coinbasepro, err := NewExchange("coinbasepro", config)
 	if err != nil {
 		t.Error(err)
 	}
@@ -43,8 +49,11 @@ func TestCoinbaseCandles(t *testing.T) {
 }
 
 func TestCoinbaseListProducts(t *testing.T) {
-	auth := core.NewAuth(key, pass, secret)
-	coinbasepro, err := NewExchange("coinbasepro", auth)
+	config := &core.Config{
+		Auth:    core.NewAuth(key, pass, secret),
+		Sandbox: true,
+	}
+	coinbasepro, err := NewExchange("coinbasepro", config)
 	if err != nil {
 		t.Error(err)
 	}
@@ -58,8 +67,11 @@ func TestCoinbaseListProducts(t *testing.T) {
 }
 
 func TestCoinbaseFeed(t *testing.T) {
-	auth := core.NewAuth(key, pass, secret)
-	coinbasepro, err := NewExchange("coinbasepro", auth)
+	config := &core.Config{
+		Auth:    core.NewAuth(key, pass, secret),
+		Sandbox: true,
+	}
+	coinbasepro, err := NewExchange("coinbasepro", config)
 	if err != nil {
 		t.Error(err)
 	}

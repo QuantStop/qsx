@@ -13,7 +13,7 @@ type YFinance struct {
 	core.Exchange
 }
 
-func NewYFinance(auth *core.Auth) (core.Qsx, error) {
+func NewYFinance(config *core.Config) (core.Qsx, error) {
 
 	rl := rate.NewLimiter(rate.Every(time.Second), 10) // 10 requests per second
 
@@ -34,7 +34,7 @@ func NewYFinance(auth *core.Auth) (core.Qsx, error) {
 	return &YFinance{
 		core.Exchange{
 			Name: core.YFinance,
-			Auth: auth,
+			Auth: config.Auth,
 			API:  api,
 		},
 	}, nil

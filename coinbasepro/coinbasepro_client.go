@@ -58,12 +58,12 @@ type CoinbasePro struct {
 	Conn *websocket.Conn
 }
 
-func NewCoinbasePro(auth *core.Auth) (core.Qsx, error) {
+func NewCoinbasePro(config *core.Config) (core.Qsx, error) {
 
 	t := transport{
-		authKey:        auth.Key,
-		authPassphrase: auth.Passphrase,
-		authSecret:     auth.Secret,
+		authKey:        config.Key,
+		authPassphrase: config.Passphrase,
+		authSecret:     config.Secret,
 		timestamp: func() string {
 			return strconv.FormatInt(time.Now().Unix(), 10)
 		},
@@ -79,21 +79,21 @@ func NewCoinbasePro(auth *core.Auth) (core.Qsx, error) {
 			Timeout:       0,
 		},
 		core.Options{
-			ApiURL:  coinbaseproSandboxRestAPIURL,
+			ApiURL:  coinbaseproAPIURL,
 			Verbose: false,
 		},
 		rl,
 	)
 
 	ws := &core.Dialer{
-		URL: coinbaseproSandboxWebsocketURL,
+		URL: coinbaseproWebsocketURL,
 	}
 
 	return &CoinbasePro{
 		core.Exchange{
 			Name:      core.CoinbasePro,
 			Crypto:    true,
-			Auth:      auth,
+			Auth:      config.Auth,
 			API:       api,
 			Websocket: ws,
 		},

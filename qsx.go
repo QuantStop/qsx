@@ -9,7 +9,7 @@ import (
 	"github.com/quantstop/qsx/yfinance"
 )
 
-func NewExchange(name core.ExchangeName, auth *core.Auth) (core.Qsx, error) {
+func NewExchange(name core.ExchangeName, config *core.Config) (core.Qsx, error) {
 
 	found := false
 	for _, x := range core.SupportedExchanges {
@@ -24,21 +24,21 @@ func NewExchange(name core.ExchangeName, auth *core.Auth) (core.Qsx, error) {
 
 	switch name {
 	case core.CoinbasePro:
-		c, err := coinbasepro.NewCoinbasePro(auth)
+		c, err := coinbasepro.NewCoinbasePro(config)
 		if err != nil {
 			return nil, err
 		}
 		return c, nil
 
 	case core.Binance:
-		b, err := binance.NewBinance(auth)
+		b, err := binance.NewBinance(config)
 		if err != nil {
 			return nil, err
 		}
 		return b, nil
 
 	case core.YFinance:
-		b, err := yfinance.NewYFinance(auth)
+		b, err := yfinance.NewYFinance(config)
 		if err != nil {
 			return nil, err
 		}

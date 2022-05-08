@@ -57,8 +57,11 @@ You may leave the fields empty as blank input strings.
 </small></i>
 
 ```go
-auth := qsx.NewAuth("key", "pass", "secret")
-coinbasepro, err := NewExchange("coinbasepro", auth)
+config := &core.Config{
+    Auth:    core.NewAuth(key, pass, secret),
+    Sandbox: true,
+}
+coinbasepro, err := NewExchange("coinbasepro", config)
 if err != nil {
     // handle error
 }

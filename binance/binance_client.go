@@ -76,12 +76,12 @@ type Binance struct {
 	core.Exchange
 }
 
-func NewBinance(auth *core.Auth) (core.Qsx, error) {
+func NewBinance(config *core.Config) (core.Qsx, error) {
 
 	// OAuth example
 	httpClient := authConfig.Client(
 		context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{Transport: &transport{}}),
-		auth.Token,
+		config.Token,
 	)
 
 	rl := rate.NewLimiter(rate.Every(time.Second), 10) // 10 requests per second
@@ -98,7 +98,7 @@ func NewBinance(auth *core.Auth) (core.Qsx, error) {
 	return &Binance{
 		core.Exchange{
 			Name: core.Binance,
-			Auth: auth,
+			Auth: config.Auth,
 			API:  api,
 		},
 	}, nil
