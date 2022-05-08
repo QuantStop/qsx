@@ -3,6 +3,7 @@ package coinbasepro
 import (
 	"context"
 	"github.com/quantstop/qsx/qsx"
+	"sync"
 	"time"
 )
 
@@ -150,4 +151,23 @@ func diff(a, b time.Time) (year, month, day, hour, min, sec int) {
 	}
 
 	return
+}
+
+func (c *CoinbasePro) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, product string, feed interface{}) error {
+
+	// create a new subscription request
+	prods := []ProductID{ProductID(product)}
+	channelNames := []ChannelName{
+		ChannelNameHeartbeat,
+		ChannelNameLevel2,
+	}
+	channels := []Channel{
+		{
+			Name:       ChannelNameMatches,
+			ProductIDs: []ProductID{ProductID(product)},
+		},
+	}
+	subReq := NewSubscriptionRequest(prods, channelNames, channels)
+
+	return c.Watch(shutdown, wg, subReq, feed.(*Feed))
 }

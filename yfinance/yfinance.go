@@ -5,6 +5,7 @@ import (
 	"github.com/quantstop/qsx/qsx"
 	"golang.org/x/time/rate"
 	"net/http"
+	"sync"
 	"time"
 )
 
@@ -41,4 +42,8 @@ func NewYFinance(auth *qsx.Auth) (qsx.Qsx, error) {
 
 func (y *YFinance) GetHistoricalCandles(ctx context.Context, productID string) ([]qsx.Candle, error) {
 	return nil, nil
+}
+
+func (y *YFinance) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, product string, feed interface{}) error {
+	return nil
 }
