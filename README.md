@@ -1,3 +1,4 @@
+<!--suppress ALL -->
 <div id="top"></div>
 
 <!-- PROJECT SHIELDS -->
@@ -25,25 +26,13 @@ Note:
 <!-- PROJECT LOGO -->
 <div align="center">
 
-<h1 align="center">QSX</h1>
-<h3>QuantStop eXchange</h3>
+  <h1 align="center">QSX</h1>
+  <h3>QuantStop eXchange</h3>
 
   <p align="center">
-    Library for crypto currency and stock market exchanges.
-    <br />
-    <!--<a href="https://github.com/quantstop/quantstopterminal"><strong>Explore the docs »</strong></a>
-    <br />
-    <br />
-    <a href="https://github.com/quantstop/quantstopterminal">View Demo</a>
-    ·
-    <a href="https://github.com/quantstop/quantstopterminal/issues">Report Bug</a>
-    ·
-    <a href="https://github.com/quantstop/quantstopterminal/issues">Request Feature</a>-->
+    Go library for crypto currency and stock market exchanges. <br />
   </p>
 </div>
-
-
-
 
 <br />
 
