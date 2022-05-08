@@ -3,7 +3,7 @@ package coinbasepro
 import (
 	"context"
 	"fmt"
-	"github.com/quantstop/qsx/qsx"
+	"github.com/quantstop/qsx/core"
 )
 
 // Account holds funds for trading on coinbasepro.
@@ -85,7 +85,7 @@ func (c *CoinbasePro) GetLedger(ctx context.Context, accountID string, paginatio
 		return Ledger{}, err
 	}
 	var ledger Ledger
-	query := qsx.Query(pagination.Params())
+	query := core.Query(pagination.Params())
 	return ledger, c.API.Get(ctx, fmt.Sprintf("/%s/%s/%s/%s", coinbaseproAccounts, accountID, coinbaseproLedger, query), &ledger)
 }
 
@@ -136,6 +136,6 @@ func (c *CoinbasePro) GetHolds(ctx context.Context, accountID string, pagination
 		return Holds{}, err
 	}
 	var holds Holds
-	query := qsx.Query(pagination.Params())
+	query := core.Query(pagination.Params())
 	return holds, c.API.Get(ctx, fmt.Sprintf("/%s/%s/%s/%s", coinbaseproAccounts, accountID, coinbaseproHolds, query), &holds)
 }

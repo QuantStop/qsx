@@ -2,7 +2,7 @@ package binance
 
 import (
 	"context"
-	"github.com/quantstop/qsx/qsx"
+	"github.com/quantstop/qsx/core"
 	"golang.org/x/oauth2"
 	"golang.org/x/time/rate"
 	"net/http"
@@ -73,10 +73,10 @@ var (
 )
 
 type Binance struct {
-	qsx.Exchange
+	core.Exchange
 }
 
-func NewBinance(auth *qsx.Auth) (qsx.Qsx, error) {
+func NewBinance(auth *core.Auth) (core.Qsx, error) {
 
 	// OAuth example
 	httpClient := authConfig.Client(
@@ -86,9 +86,9 @@ func NewBinance(auth *qsx.Auth) (qsx.Qsx, error) {
 
 	rl := rate.NewLimiter(rate.Every(time.Second), 10) // 10 requests per second
 
-	api := qsx.New(
+	api := core.New(
 		httpClient,
-		qsx.Options{
+		core.Options{
 			ApiURL:  apiURL,
 			Verbose: false,
 		},
@@ -96,8 +96,8 @@ func NewBinance(auth *qsx.Auth) (qsx.Qsx, error) {
 	)
 
 	return &Binance{
-		qsx.Exchange{
-			Name: qsx.Binance,
+		core.Exchange{
+			Name: core.Binance,
 			Auth: auth,
 			API:  api,
 		},

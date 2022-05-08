@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/quantstop/qsx/qsx"
+	"github.com/quantstop/qsx/core"
 )
 
 // Order
@@ -519,7 +519,7 @@ func (c *CoinbasePro) CancelOrder(ctx context.Context, spec CancelOrderSpec) (ma
 	if err != nil {
 		return nil, err
 	}
-	return resp, c.API.Delete(ctx, "/orders/"+qsx.Query(spec.Params()), nil, &resp)
+	return resp, c.API.Delete(ctx, "/orders/"+core.Query(spec.Params()), nil, &resp)
 }
 
 // GetOrders retrieves a paginated list of the current open orders for the current Profile. Only open or un-settled
@@ -527,7 +527,7 @@ func (c *CoinbasePro) CancelOrder(ctx context.Context, spec CancelOrderSpec) (ma
 func (c *CoinbasePro) GetOrders(ctx context.Context, filter OrderFilter, pagination PaginationParams) (Orders, error) {
 	params := append(filter.Params(), pagination.Params()...)
 	var orders Orders
-	return orders, c.API.Get(ctx, fmt.Sprintf("/orders/%s", qsx.Query(params)), &orders)
+	return orders, c.API.Get(ctx, fmt.Sprintf("/orders/%s", core.Query(params)), &orders)
 }
 
 // GetOrder retrieves the details of a single Order. The requested Order must belong to the current Profile.

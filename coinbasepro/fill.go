@@ -3,7 +3,7 @@ package coinbasepro
 import (
 	"context"
 	"fmt"
-	"github.com/quantstop/qsx/qsx"
+	"github.com/quantstop/qsx/core"
 )
 
 // Fill
@@ -70,5 +70,5 @@ type Fills struct {
 func (c *CoinbasePro) GetFills(ctx context.Context, filter FillFilter, pagination PaginationParams) (Fills, error) {
 	params := append(filter.Params(), pagination.Params()...)
 	var fills Fills
-	return fills, c.API.Get(ctx, fmt.Sprintf("/fills/%s", qsx.Query(params)), &fills)
+	return fills, c.API.Get(ctx, fmt.Sprintf("/fills/%s", core.Query(params)), &fills)
 }

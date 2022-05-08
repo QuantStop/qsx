@@ -2,7 +2,7 @@ package coinbasepro
 
 import (
 	"context"
-	"github.com/quantstop/qsx/qsx"
+	"github.com/quantstop/qsx/core"
 	"sync"
 	"time"
 )
@@ -11,8 +11,8 @@ import (
 // This is served as an adapter to the Coinbase client, which adheres strictly to the Coinbase API.
 // Here is where the data is formatted into the common type defined by Qsx.
 
-func (c *CoinbasePro) GetHistoricalCandles(ctx context.Context, productID string) ([]qsx.Candle, error) {
-	var candles []qsx.Candle
+func (c *CoinbasePro) GetHistoricalCandles(ctx context.Context, productID string) ([]core.Candle, error) {
+	var candles []core.Candle
 	coinbaseCandles, err := c.GetHistoricRates(ctx, productID, HistoricRateFilter{
 		Granularity: 60,
 		End:         Time{},
@@ -23,7 +23,7 @@ func (c *CoinbasePro) GetHistoricalCandles(ctx context.Context, productID string
 	}
 
 	for _, cbCandle := range coinbaseCandles.Candles {
-		candles = append(candles, qsx.Candle{
+		candles = append(candles, core.Candle{
 			Close:  cbCandle.Close,
 			High:   cbCandle.High,
 			Low:    cbCandle.Low,

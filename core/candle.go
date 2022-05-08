@@ -1,4 +1,4 @@
-package qsx
+package core
 
 import "time"
 

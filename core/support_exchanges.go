@@ -1,4 +1,4 @@
-package qsx
+package core
 
 type ExchangeName string
 

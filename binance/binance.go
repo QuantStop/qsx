@@ -2,11 +2,11 @@ package binance
 
 import (
 	"context"
-	"github.com/quantstop/qsx/qsx"
+	"github.com/quantstop/qsx/core"
 	"sync"
 )
 
-func (b *Binance) GetHistoricalCandles(ctx context.Context, productID string) ([]qsx.Candle, error) {
+func (b *Binance) GetHistoricalCandles(ctx context.Context, productID string) ([]core.Candle, error) {
 	return nil, nil
 }
 

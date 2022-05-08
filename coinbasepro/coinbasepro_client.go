@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
-	"github.com/quantstop/qsx/qsx"
+	"github.com/quantstop/qsx/core"
 	"golang.org/x/time/rate"
 	"net/http"
 	"strconv"
@@ -54,11 +54,11 @@ const (
 )
 
 type CoinbasePro struct {
-	qsx.Exchange
+	core.Exchange
 	Conn *websocket.Conn
 }
 
-func NewCoinbasePro(auth *qsx.Auth) (qsx.Qsx, error) {
+func NewCoinbasePro(auth *core.Auth) (core.Qsx, error) {
 
 	t := transport{
 		authKey:        auth.Key,
@@ -71,27 +71,27 @@ func NewCoinbasePro(auth *qsx.Auth) (qsx.Qsx, error) {
 
 	rl := rate.NewLimiter(rate.Every(time.Second), 10) // 10 requests per second
 
-	api := qsx.New(
+	api := core.New(
 		&http.Client{
 			Transport:     &t,
 			CheckRedirect: nil,
 			Jar:           nil,
 			Timeout:       0,
 		},
-		qsx.Options{
+		core.Options{
 			ApiURL:  coinbaseproAPIURL,
 			Verbose: false,
 		},
 		rl,
 	)
 
-	ws := &qsx.Dialer{
+	ws := &core.Dialer{
 		URL: coinbaseproWebsocketURL,
 	}
 
 	return &CoinbasePro{
-		qsx.Exchange{
-			Name:      qsx.CoinbasePro,
+		core.Exchange{
+			Name:      core.CoinbasePro,
 			Crypto:    true,
 			Auth:      auth,
 			API:       api,
@@ -119,7 +119,7 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 	timestamp := t.timestamp()
 	msg := fmt.Sprintf("%s%s%s%s", timestamp, req.Method, req.URL, b.Bytes())
-	signature, err := qsx.SignSHA256HMAC(msg, t.authSecret)
+	signature, err := core.SignSHA256HMAC(msg, t.authSecret)
 	if err != nil {
 		return nil, fmt.Errorf("qsx coinbase: error signing content: %w", err)
 	}

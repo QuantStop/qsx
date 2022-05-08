@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 	cbp "github.com/quantstop/qsx/coinbasepro"
-	"github.com/quantstop/qsx/qsx"
+	"github.com/quantstop/qsx/core"
 	"golang.org/x/sync/errgroup"
 	"sync"
 	"testing"
@@ -15,9 +15,9 @@ var pass = "pass"
 var secret = "secret"
 
 func TestNewClient(t *testing.T) {
-	auth := qsx.NewAuth(key, pass, secret)
+	auth := core.NewAuth(key, pass, secret)
 
-	for _, x := range qsx.SupportedExchanges {
+	for _, x := range core.SupportedExchanges {
 		exchange, err := NewExchange(x, auth)
 		if err != nil {
 			t.Error(err)
@@ -28,7 +28,7 @@ func TestNewClient(t *testing.T) {
 }
 
 func TestCoinbaseCandles(t *testing.T) {
-	auth := qsx.NewAuth(key, pass, secret)
+	auth := core.NewAuth(key, pass, secret)
 	coinbasepro, err := NewExchange("coinbasepro", auth)
 	if err != nil {
 		t.Error(err)
@@ -43,7 +43,7 @@ func TestCoinbaseCandles(t *testing.T) {
 }
 
 func TestCoinbaseFeed(t *testing.T) {
-	auth := qsx.NewAuth(key, pass, secret)
+	auth := core.NewAuth(key, pass, secret)
 	coinbasepro, err := NewExchange("coinbasepro", auth)
 	if err != nil {
 		t.Error(err)

@@ -1,4 +1,4 @@
-package qsx
+package core
 
 import (
 	"github.com/gorilla/websocket"

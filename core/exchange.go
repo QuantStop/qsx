@@ -1,4 +1,4 @@
-package qsx
+package core
 
 // Exchange is the base type for all supported exchanges
 // It implements common functionality and traits that all exchanges share

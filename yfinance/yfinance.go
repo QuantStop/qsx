@@ -2,7 +2,7 @@ package yfinance
 
 import (
 	"context"
-	"github.com/quantstop/qsx/qsx"
+	"github.com/quantstop/qsx/core"
 	"golang.org/x/time/rate"
 	"net/http"
 	"sync"
@@ -10,21 +10,21 @@ import (
 )
 
 type YFinance struct {
-	qsx.Exchange
+	core.Exchange
 }
 
-func NewYFinance(auth *qsx.Auth) (qsx.Qsx, error) {
+func NewYFinance(auth *core.Auth) (core.Qsx, error) {
 
 	rl := rate.NewLimiter(rate.Every(time.Second), 10) // 10 requests per second
 
-	api := qsx.New(
+	api := core.New(
 		&http.Client{
 			Transport:     nil,
 			CheckRedirect: nil,
 			Jar:           nil,
 			Timeout:       0,
 		},
-		qsx.Options{
+		core.Options{
 			ApiURL:  "",
 			Verbose: false,
 		},
@@ -32,15 +32,15 @@ func NewYFinance(auth *qsx.Auth) (qsx.Qsx, error) {
 	)
 
 	return &YFinance{
-		qsx.Exchange{
-			Name: qsx.YFinance,
+		core.Exchange{
+			Name: core.YFinance,
 			Auth: auth,
 			API:  api,
 		},
 	}, nil
 }
 
-func (y *YFinance) GetHistoricalCandles(ctx context.Context, productID string) ([]qsx.Candle, error) {
+func (y *YFinance) GetHistoricalCandles(ctx context.Context, productID string) ([]core.Candle, error) {
 	return nil, nil
 }
 
