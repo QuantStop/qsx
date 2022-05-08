@@ -171,3 +171,34 @@ func (c *CoinbasePro) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, prod
 
 	return c.Watch(shutdown, wg, subReq, feed.(*Feed))
 }
+
+func (c *CoinbasePro) ListProducts(ctx context.Context) ([]core.Product, error) {
+	products, err := c.ListCoinbaseProducts(ctx)
+	if err != nil {
+		return nil, err
+	}
+	var returnArr []core.Product
+	for _, product := range products {
+		returnArr = append(returnArr, core.Product{
+			ID:             product.ID,
+			BaseCurrency:   string(product.BaseCurrency),
+			QuoteCurrency:  string(product.QuoteCurrency),
+			BaseMinSize:    product.BaseMinSize,
+			BaseMaxSize:    product.BaseMaxSize,
+			QuoteIncrement: product.QuoteIncrement,
+			BaseIncrement:  product.BaseIncrement,
+			DisplayName:    product.DisplayName,
+			MinMarketFunds: product.MinMarketFunds,
+			MaxMarketFunds: product.MaxMarketFunds,
+			MarginEnabled:  product.MarginEnabled,
+			PostOnly:       product.PostOnly,
+			LimitOnly:      product.LimitOnly,
+			CancelOnly:     product.CancelOnly,
+			Status:         string(product.Status),
+			StatusMessage:  product.StatusMessage,
+			AuctionMode:    product.AuctionMode,
+		})
+	}
+
+	return returnArr, nil
+}

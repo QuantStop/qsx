@@ -47,3 +47,7 @@ func (y *YFinance) GetHistoricalCandles(ctx context.Context, productID string) (
 func (y *YFinance) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, product string, feed interface{}) error {
 	return nil
 }
+
+func (y *YFinance) ListProducts(ctx context.Context) ([]core.Product, error) {
+	return nil, nil
+}

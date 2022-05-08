@@ -232,8 +232,8 @@ type ProductStats struct {
 
 // Market Data
 
-// ListProducts retrieves the list Currency pairs available for trading. The list is not paginated.
-func (c *CoinbasePro) ListProducts(ctx context.Context) ([]Product, error) {
+// ListCoinbaseProducts retrieves the list Currency pairs available for trading. The list is not paginated.
+func (c *CoinbasePro) ListCoinbaseProducts(ctx context.Context) ([]Product, error) {
 	var products []Product
 	return products, c.API.Get(ctx, coinbaseproProducts, &products)
 }
