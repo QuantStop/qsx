@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/websocket"
 	"github.com/quantstop/qsx/qsx"
 	"golang.org/x/time/rate"
 	"net/http"
@@ -54,6 +55,7 @@ const (
 
 type CoinbasePro struct {
 	qsx.Exchange
+	Conn *websocket.Conn
 }
 
 func NewCoinbasePro(auth *qsx.Auth) (qsx.Qsx, error) {
@@ -83,12 +85,19 @@ func NewCoinbasePro(auth *qsx.Auth) (qsx.Qsx, error) {
 		rl,
 	)
 
+	ws := &qsx.Dialer{
+		URL: coinbaseproWebsocketURL,
+	}
+
 	return &CoinbasePro{
 		qsx.Exchange{
-			Name: qsx.CoinbasePro,
-			Auth: auth,
-			API:  api,
+			Name:      qsx.CoinbasePro,
+			Crypto:    true,
+			Auth:      auth,
+			API:       api,
+			Websocket: ws,
 		},
+		&websocket.Conn{},
 	}, nil
 }
 
