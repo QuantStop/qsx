@@ -3,6 +3,7 @@ package yfinance
 import (
 	"context"
 	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/core/orderbook"
 	"golang.org/x/time/rate"
 	"net/http"
 	"sync"
@@ -44,8 +45,8 @@ func (y *YFinance) GetHistoricalCandles(ctx context.Context, productID string, g
 	return nil, nil
 }
 
-func (y *YFinance) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, product string, feed interface{}) error {
-	return nil
+func (y *YFinance) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, product string, feed interface{}) (*orderbook.Orderbook, error) {
+	return nil, nil
 }
 
 func (y *YFinance) ListProducts(ctx context.Context) ([]core.Product, error) {

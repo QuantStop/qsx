@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/gorilla/websocket"
+	"github.com/quantstop/qsx/core/orderbook"
 	"log"
+	"strconv"
 	"sync"
 	"time"
 )
@@ -148,24 +150,28 @@ var (
 )
 
 // Watch provides a feed of real-time market data updates for orders and trades.
-func (c *CoinbasePro) Watch(shutdown chan struct{}, wg *sync.WaitGroup, subscriptionRequest SubscriptionRequest, feed *Feed) (err error) {
+func (c *CoinbasePro) Watch(shutdown chan struct{}, wg *sync.WaitGroup, subscriptionRequest SubscriptionRequest, feed *Feed) (*orderbook.Orderbook, error) {
+	var err error
 
 	// try dialing the connection
 	if c.Conn, err = c.Websocket.Dial(); err != nil {
-		return err
+		return nil, err
 	}
 
 	// subscription request must be sent within 5 seconds of open or socket will auto-close
 	if err = c.Conn.WriteJSON(subscriptionRequest); err != nil {
-		return err
+		return nil, err
 	}
 
-	// run the feed
-	c.watch(shutdown, wg, feed)
-	return nil
+	// create the orderbook
+	book := orderbook.NewOrderbook()
+
+	// run the feed and return the book
+	c.watch(shutdown, wg, feed, book)
+	return book, nil
 }
 
-func (c *CoinbasePro) watch(shutdown chan struct{}, wg *sync.WaitGroup, feed *Feed) {
+func (c *CoinbasePro) watch(shutdown chan struct{}, wg *sync.WaitGroup, feed *Feed, orderbook *orderbook.Orderbook) {
 
 	log.Println("coinbase websocket watch() routine activated, starting up feeds ...")
 	wg.Add(1)
@@ -187,7 +193,7 @@ func (c *CoinbasePro) watch(shutdown chan struct{}, wg *sync.WaitGroup, feed *Fe
 					}
 				}
 				message = bytes.TrimSpace(bytes.Replace(message, newline, space, -1))
-				decodeMessage(message, feed)
+				decodeMessage(message, feed, orderbook)
 
 			}
 		}
@@ -197,7 +203,7 @@ func (c *CoinbasePro) watch(shutdown chan struct{}, wg *sync.WaitGroup, feed *Fe
 
 }
 
-func decodeMessage(message []byte, feed *Feed) {
+func decodeMessage(message []byte, feed *Feed, orderbook *orderbook.Orderbook) {
 	var messageInterface map[string]interface{}
 	if err := json.Unmarshal(message, &messageInterface); err != nil {
 		log.Printf("coinbase websocket decodeMessage error unmarshalling incoming bytes: %v", err)
@@ -214,12 +220,66 @@ func decodeMessage(message []byte, feed *Feed) {
 			log.Printf("coinbase websocket decodeMessage error unmarshalling %s: %v", MessageTypeL2Update, err)
 			return
 		}
+		for _, change := range l2up.Changes {
+			price, err := strconv.ParseFloat(change[1], 0)
+			if err != nil {
+				log.Printf("coinbase error converting bid price to orderbook Order: %v", err)
+			}
+			size, err := strconv.ParseFloat(change[2], 0)
+			if err != nil {
+				log.Printf("coinbase error converting bid size to orderbook Order: %v", err)
+			}
+			if size != 0.0 {
+				order := orderbook.NewOrder()
+				if change[0] == "buy" {
+					order.BidOrAsk = true //bid
+				} else {
+					order.BidOrAsk = false //ask
+				}
+				order.Volume = size
+				orderbook.Add(price, order)
+			} else {
+				if change[0] == "buy" {
+					orderbook.DeleteBidLimit(price)
+				} else {
+					orderbook.DeleteAskLimit(price)
+				}
+			}
+		}
 		feed.Level2 <- l2up
 	case MessageTypeSnapshot:
 		l2snap := L2SnapshotMessage{}
 		if err := json.Unmarshal(message, &l2snap); err != nil {
 			log.Printf("coinbase websocket decodeMessage error unmarshalling %s: %v", MessageTypeSnapshot, err)
 			return
+		}
+		for _, bid := range l2snap.Bids {
+			price, err := strconv.ParseFloat(bid[0], 0)
+			if err != nil {
+				log.Printf("coinbase error converting bid price to orderbook Order: %v", err)
+			}
+			size, err := strconv.ParseFloat(bid[1], 0)
+			if err != nil {
+				log.Printf("coinbase error converting bid size to orderbook Order: %v", err)
+			}
+			order := orderbook.NewOrder()
+			order.BidOrAsk = true //bid
+			order.Volume = size
+			orderbook.Add(price, order)
+		}
+		for _, ask := range l2snap.Asks {
+			price, err := strconv.ParseFloat(ask[0], 0)
+			if err != nil {
+				log.Printf("coinbase error converting ask price to orderbook Order: %v", err)
+			}
+			size, err := strconv.ParseFloat(ask[1], 0)
+			if err != nil {
+				log.Printf("coinbase error converting ask size to orderbook Order: %v", err)
+			}
+			order := orderbook.NewOrder()
+			order.BidOrAsk = false //ask
+			order.Volume = size
+			orderbook.Add(price, order)
 		}
 		feed.Level2Snap <- l2snap
 	case MessageTypeHeartbeat:

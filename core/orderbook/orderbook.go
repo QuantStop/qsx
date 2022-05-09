@@ -17,10 +17,10 @@ type Orderbook struct {
 	pool           *sync.Pool
 }
 
-func NewOrderbook() Orderbook {
+func NewOrderbook() *Orderbook {
 	bids := NewTree()
 	asks := NewTree()
-	return Orderbook{
+	return &Orderbook{
 		Bids:           &bids,
 		Asks:           &asks,
 		bidLimitsCache: make(map[float64]*LimitOrder, MaxLimitsNum),
@@ -60,6 +60,10 @@ func (book *Orderbook) Add(price float64, o *Order) {
 
 	// add order to the limit
 	limit.Enqueue(o)
+}
+
+func (book *Orderbook) NewOrder() *Order {
+	return &Order{}
 }
 
 func (book *Orderbook) Cancel(o *Order) {

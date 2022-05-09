@@ -3,6 +3,7 @@ package coinbasepro
 import (
 	"context"
 	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/core/orderbook"
 	"sync"
 	"time"
 )
@@ -173,7 +174,7 @@ func diff(a, b time.Time) (year, month, day, hour, min, sec int) {
 	return
 }
 
-func (c *CoinbasePro) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, product string, feed interface{}) error {
+func (c *CoinbasePro) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, product string, feed interface{}) (*orderbook.Orderbook, error) {
 
 	// create a new subscription request
 	prods := []ProductID{ProductID(product)}

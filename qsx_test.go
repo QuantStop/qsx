@@ -84,9 +84,11 @@ func TestCoinbaseFeed(t *testing.T) {
 	shutdown := make(chan struct{})
 
 	// start api client feed
-	wg.Go(func() error {
-		return coinbasepro.WatchFeed(shutdown, s, "BTC-USD", feed)
-	})
+
+	book, err := coinbasepro.WatchFeed(shutdown, s, "BTC-USD", feed)
+	if err != nil {
+		t.Error(err)
+	}
 
 	// Loop on Heartbeat channel
 	wg.Go(func() error {
@@ -97,6 +99,9 @@ func TestCoinbaseFeed(t *testing.T) {
 			default:
 				out := fmt.Sprintf("%s | %s | %s | %v | %v", message.Type, message.Time.String(), message.ProductId, message.Sequence, message.LastTradeId)
 				fmt.Println(out)
+
+				bk := fmt.Sprintf("Best Bid: %v | Best Ask: %v ", book.GetBestBid(), book.GetBestOffer())
+				fmt.Println(bk)
 			}
 		}
 		return nil
