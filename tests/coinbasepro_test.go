@@ -1,45 +1,37 @@
-package qsx
+package tests
 
 import (
 	"context"
 	"fmt"
-	cbp "github.com/quantstop/qsx/coinbasepro"
+	"github.com/quantstop/qsx"
+	"github.com/quantstop/qsx/coinbasepro"
 	"github.com/quantstop/qsx/core"
 	"golang.org/x/sync/errgroup"
 	"sync"
 	"testing"
 )
 
-var key = ""
-var pass = ""
-var secret = ""
+var cbpKey = ""
+var cbpPass = ""
+var cbpSecret = ""
 
-func TestNewClient(t *testing.T) {
+var CoinbaseproClient core.Qsx
+var err error
+
+func TestCoinbaseClient(t *testing.T) {
 	config := &core.Config{
-		Auth:    core.NewAuth(key, pass, secret),
+		Auth:    core.NewAuth(cbpKey, cbpPass, cbpSecret),
 		Sandbox: true,
 	}
-
-	for _, x := range core.SupportedExchanges {
-		exchange, err := NewExchange(x, config)
-		if err != nil {
-			t.Error(err)
-		}
-		t.Logf("Exchange Name: %v", exchange.GetName())
-	}
-
-}
-
-func TestCoinbaseCandles(t *testing.T) {
-	config := &core.Config{
-		Auth:    core.NewAuth(key, pass, secret),
-		Sandbox: true,
-	}
-	coinbasepro, err := NewExchange("coinbasepro", config)
+	CoinbaseproClient, err = qsx.NewExchange("coinbasepro", config)
 	if err != nil {
 		t.Error(err)
 	}
-	candles, err := coinbasepro.GetHistoricalCandles(context.TODO(), "BTC-USD", "1m")
+}
+
+func TestCoinbaseCandles(t *testing.T) {
+	TestCoinbaseClient(t)
+	candles, err := CoinbaseproClient.GetHistoricalCandles(context.TODO(), "BTC-USD", "1m")
 	if err != nil {
 		t.Error(err)
 	}
@@ -49,15 +41,8 @@ func TestCoinbaseCandles(t *testing.T) {
 }
 
 func TestCoinbaseListProducts(t *testing.T) {
-	config := &core.Config{
-		Auth:    core.NewAuth(key, pass, secret),
-		Sandbox: true,
-	}
-	coinbasepro, err := NewExchange("coinbasepro", config)
-	if err != nil {
-		t.Error(err)
-	}
-	products, err := coinbasepro.ListProducts(context.TODO())
+	TestCoinbaseClient(t)
+	products, err := CoinbaseproClient.ListProducts(context.TODO())
 	if err != nil {
 		t.Error(err)
 	}
@@ -67,15 +52,8 @@ func TestCoinbaseListProducts(t *testing.T) {
 }
 
 func TestCoinbaseFeed(t *testing.T) {
-	config := &core.Config{
-		Auth:    core.NewAuth(key, pass, secret),
-		Sandbox: true,
-	}
-	coinbasepro, err := NewExchange("coinbasepro", config)
-	if err != nil {
-		t.Error(err)
-	}
-	feed := cbp.NewFeed()
+	TestCoinbaseClient(t)
+	feed := coinbasepro.NewFeed()
 
 	ctx := context.TODO()
 	wg, ctx := errgroup.WithContext(ctx)
@@ -84,8 +62,7 @@ func TestCoinbaseFeed(t *testing.T) {
 	shutdown := make(chan struct{})
 
 	// start api client feed
-
-	book, err := coinbasepro.WatchFeed(shutdown, s, "BTC-USD", feed)
+	book, err := CoinbaseproClient.WatchFeed(shutdown, s, "BTC-USD", feed)
 	if err != nil {
 		t.Error(err)
 	}
