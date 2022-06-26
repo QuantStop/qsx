@@ -64,5 +64,6 @@ type ServerTime struct {
 // GetServerTime retrieves the Coinbase Pro API server time.
 func (c *CoinbasePro) GetServerTime(ctx context.Context) (ServerTime, error) {
 	var serverTime ServerTime
-	return serverTime, c.API.Get(ctx, "/time", &serverTime)
+	path := fmt.Sprintf("/%s", coinbaseproTime)
+	return serverTime, c.API.Get(ctx, path, &serverTime)
 }

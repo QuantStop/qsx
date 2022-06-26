@@ -25,13 +25,15 @@ type Account struct {
 // ListAccounts retrieves the list of trading accounts belonging to the Profile of the API key. The list is not paginated.
 func (c *CoinbasePro) ListAccounts(ctx context.Context) ([]Account, error) {
 	var accounts []Account
-	return accounts, c.API.Get(ctx, fmt.Sprintf("/%s/", coinbaseproAccounts), &accounts)
+	path := fmt.Sprintf("/%s/", coinbaseproAccounts)
+	return accounts, c.API.Get(ctx, path, &accounts)
 }
 
 // GetAccount retrieves the detailed representation of a trading Account. The requested Account must belong to the current Profile.
 func (c *CoinbasePro) GetAccount(ctx context.Context, accountID string) (Account, error) {
 	var account Account
-	return account, c.API.Get(ctx, fmt.Sprintf("/%s/%s", coinbaseproAccounts, accountID), &account)
+	path := fmt.Sprintf("/%s/%s", coinbaseproAccounts, accountID)
+	return account, c.API.Get(ctx, path, &account)
 }
 
 // Ledger holds the detailed activity of the profile associated with the current API key.
@@ -86,7 +88,8 @@ func (c *CoinbasePro) GetLedger(ctx context.Context, accountID string, paginatio
 	}
 	var ledger Ledger
 	query := core.Query(pagination.Params())
-	return ledger, c.API.Get(ctx, fmt.Sprintf("/%s/%s/%s/%s", coinbaseproAccounts, accountID, coinbaseproLedger, query), &ledger)
+	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproAccounts, accountID, coinbaseproLedger, query)
+	return ledger, c.API.Get(ctx, path, &ledger)
 }
 
 // Holds are placed on an account for any active orders or pending withdraw requests.
@@ -137,5 +140,6 @@ func (c *CoinbasePro) GetHolds(ctx context.Context, accountID string, pagination
 	}
 	var holds Holds
 	query := core.Query(pagination.Params())
-	return holds, c.API.Get(ctx, fmt.Sprintf("/%s/%s/%s/%s", coinbaseproAccounts, accountID, coinbaseproHolds, query), &holds)
+	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproAccounts, accountID, coinbaseproHolds, query)
+	return holds, c.API.Get(ctx, path, &holds)
 }

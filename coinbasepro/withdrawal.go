@@ -251,7 +251,8 @@ type WithdrawalFeeEstimate struct {
 func (c *CoinbasePro) GetWithdrawals(ctx context.Context, filter WithdrawalFilter, pagination PaginationParams) (Withdrawals, error) {
 	params := append(filter.Params(), pagination.Params()...)
 	var withdrawals Withdrawals
-	err := c.API.Get(ctx, fmt.Sprintf("/transfers/%s", core.Query(params)), &withdrawals)
+	path := fmt.Sprintf("/%s/%s", coinbaseproTransfers, core.Query(params))
+	err := c.API.Get(ctx, path, &withdrawals)
 	if err != nil {
 		return Withdrawals{}, err
 	}
@@ -273,7 +274,8 @@ func (c *CoinbasePro) GetWithdrawals(ctx context.Context, filter WithdrawalFilte
 // GetWithdrawal retrieves the details of a single Withdrawal. The Withdrawal must belong to the current Profile.
 func (c *CoinbasePro) GetWithdrawal(ctx context.Context, withdrawalID string) (Withdrawal, error) {
 	var withdrawal Withdrawal
-	return withdrawal, c.API.Get(ctx, fmt.Sprintf("/transfers/%s", withdrawalID), &withdrawal)
+	path := fmt.Sprintf("/%s/%s", coinbaseproTransfers, withdrawalID)
+	return withdrawal, c.API.Get(ctx, path, &withdrawal)
 }
 
 // CreatePaymentMethodWithdrawal creates a Withdrawal of funds to an external PaymentMethod. Use ListPaymentMethods to
@@ -282,7 +284,8 @@ func (c *CoinbasePro) CreatePaymentMethodWithdrawal(ctx context.Context, payment
 	result := struct {
 		ID string `json:"id"`
 	}{}
-	err := c.API.Post(ctx, "/withdrawals/payment-method/", paymentMethodWithdrawal, &result)
+	path := fmt.Sprintf("/%s/", coinbaseproWithdrawalPaymentMethod)
+	err := c.API.Post(ctx, path, paymentMethodWithdrawal, &result)
 	if err != nil {
 		return Withdrawal{}, err
 	}
@@ -297,7 +300,8 @@ func (c *CoinbasePro) CreateCoinbaseAccountWithdrawal(ctx context.Context, coinb
 	result := struct {
 		ID string `json:"id"`
 	}{}
-	err := c.API.Post(ctx, "/withdrawals/coinbase-account/", coinbaseAccountWithdrawal, &result)
+	path := fmt.Sprintf("/%s/", coinbaseproWithdrawalCoinbaseAcct)
+	err := c.API.Post(ctx, path, coinbaseAccountWithdrawal, &result)
 	if err != nil {
 		return Withdrawal{}, err
 	}
@@ -310,7 +314,8 @@ func (c *CoinbasePro) CreateCryptoAddressWithdrawal(ctx context.Context, cryptoA
 	result := struct {
 		ID string `json:"id"`
 	}{}
-	err := c.API.Post(ctx, "/withdrawals/crypto/", cryptoAddressWithdrawal, &result)
+	path := fmt.Sprintf("/%s/", coinbaseproWithdrawalCrypto)
+	err := c.API.Post(ctx, path, cryptoAddressWithdrawal, &result)
 	if err != nil {
 		return Withdrawal{}, err
 	}
@@ -321,5 +326,6 @@ func (c *CoinbasePro) CreateCryptoAddressWithdrawal(ctx context.Context, cryptoA
 // GetWithdrawalFeeEstimate retrieves the estimated network fees that would apply when sending to the given address.
 func (c *CoinbasePro) GetWithdrawalFeeEstimate(ctx context.Context, cryptoAddress CryptoAddress) (WithdrawalFeeEstimate, error) {
 	var withdrawalFeeEstimate WithdrawalFeeEstimate
-	return withdrawalFeeEstimate, c.API.Get(ctx, fmt.Sprintf("/withdrawals/fee-estimate/%s", core.Query(cryptoAddress.Params())), &withdrawalFeeEstimate)
+	path := fmt.Sprintf("/%s/%s", coinbaseproWithdrawalFeeEstimate, core.Query(cryptoAddress.Params()))
+	return withdrawalFeeEstimate, c.API.Get(ctx, path, &withdrawalFeeEstimate)
 }

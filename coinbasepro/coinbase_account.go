@@ -1,6 +1,9 @@
 package coinbasepro
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 type CoinbaseAccount struct {
 	Active                 bool                   `json:"active"`
@@ -52,5 +55,6 @@ type SEPADepositInformation struct {
 // ListCoinbaseAccounts retrieves the list of CoinbaseAccounts available for the current Profile. The list is not paginated.
 func (c *CoinbasePro) ListCoinbaseAccounts(ctx context.Context) ([]CoinbaseAccount, error) {
 	var coinbaseAccounts []CoinbaseAccount
-	return coinbaseAccounts, c.API.Get(ctx, "/coinbase-accounts/", &coinbaseAccounts)
+	path := fmt.Sprintf("/%s/", coinbaseproCoinbaseAccounts)
+	return coinbaseAccounts, c.API.Get(ctx, path, &coinbaseAccounts)
 }

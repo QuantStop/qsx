@@ -45,17 +45,20 @@ type ProfileTransfer struct {
 // The list is not paginated.
 func (c *CoinbasePro) ListProfiles(ctx context.Context, filter ProfileFilter) ([]Profile, error) {
 	var profiles []Profile
-	return profiles, c.API.Get(ctx, fmt.Sprintf("/profiles/%s", core.Query(filter.Params())), &profiles)
+	path := fmt.Sprintf("/%s/%s/", coinbaseproProfiles, core.Query(filter.Params()))
+	return profiles, c.API.Get(ctx, path, &profiles)
 }
 
 // GetProfile retrieves the details of a single Profile.
 func (c *CoinbasePro) GetProfile(ctx context.Context, profileID string) (Profile, error) {
 	var profile Profile
-	return profile, c.API.Get(ctx, fmt.Sprintf("/profiles/%s", profileID), &profile)
+	path := fmt.Sprintf("/%s/%s/", coinbaseproProfiles, profileID)
+	return profile, c.API.Get(ctx, path, &profile)
 }
 
 // CreateProfileTransfer transfers funds between user Profiles.
 func (c *CoinbasePro) CreateProfileTransfer(ctx context.Context, transferSpec ProfileTransferSpec) (ProfileTransfer, error) {
 	var transfer ProfileTransfer
-	return transfer, c.API.Post(ctx, "/profiles/transfer", transferSpec, &transfer)
+	path := fmt.Sprintf("/%s", coinbaseproProfilesTransfer)
+	return transfer, c.API.Post(ctx, path, transferSpec, &transfer)
 }

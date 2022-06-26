@@ -85,7 +85,8 @@ func (c *CoinbasePro) CreateReport(ctx context.Context, createReportSpec ReportS
 	result := struct {
 		ID string `json:"id"`
 	}{}
-	err := c.API.Post(ctx, "/reports/", createReportSpec, &result)
+	path := fmt.Sprintf("/%s/", coinbaseproReports)
+	err := c.API.Post(ctx, path, createReportSpec, &result)
 	if err != nil {
 		return Report{}, err
 	}
@@ -97,5 +98,6 @@ func (c *CoinbasePro) CreateReport(ctx context.Context, createReportSpec ReportS
 // the Report will be available for download at the FileURL.
 func (c *CoinbasePro) GetReport(ctx context.Context, reportID string) (Report, error) {
 	var report Report
-	return report, c.API.Get(ctx, fmt.Sprintf("/reports/%s", reportID), &report)
+	path := fmt.Sprintf("/%s/%s", coinbaseproReports, reportID)
+	return report, c.API.Get(ctx, path, &report)
 }

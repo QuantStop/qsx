@@ -3,6 +3,7 @@ package coinbasepro
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 )
 
 type StablecoinConversionSpec struct {
@@ -33,5 +34,6 @@ type StablecoinConversion struct {
 // CreateStablecoinConversion creates a conversion from a crypto Currency a stablecoin Currency.
 func (c *CoinbasePro) CreateStablecoinConversion(ctx context.Context, stablecoinConversionSpec StablecoinConversionSpec) (StablecoinConversion, error) {
 	var result StablecoinConversion
-	return result, c.API.Post(ctx, "/conversions/", stablecoinConversionSpec, &result)
+	path := fmt.Sprintf("/%s/", coinbaseproConversions)
+	return result, c.API.Post(ctx, path, stablecoinConversionSpec, &result)
 }

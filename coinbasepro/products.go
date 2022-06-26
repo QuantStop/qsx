@@ -162,7 +162,7 @@ type BookEntry struct {
 //  {60, 300, 900, 3600, 21600, 86400}.
 // Otherwise, the request will be rejected. These values correspond to time slices representing:
 // one minute, five minutes, fifteen minutes, one hour, six hours, and one day, respectively.
-// If data points are readily available, the response may contain as many as 300 candles and some of candles
+// If data points are readily available, the response may contain as many as 300 candles and some candles
 // may precede the start value. The maximum number of data points for a single request is 300 candles.
 // If the start/end time and granularity results in more than 300 data points, the request will be rejected.
 // To retrieve finer granularity data over a larger time range, multiple requests with new start/end ranges must be used.

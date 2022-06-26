@@ -493,7 +493,8 @@ func (c *CoinbasePro) CreateLimitOrder(ctx context.Context, limitOrder LimitOrde
 		return Order{}, err
 	}
 	var order Order
-	return order, c.API.Post(ctx, "/orders/", limitOrder, &order)
+	path := fmt.Sprintf("/%s/", coinbaseproOrders)
+	return order, c.API.Post(ctx, path, limitOrder, &order)
 }
 
 // CreateMarketOrder creates a MarketOrder with no pricing guarantees. A MarketOrder makes it easy to trade specific
@@ -503,7 +504,8 @@ func (c *CoinbasePro) CreateMarketOrder(ctx context.Context, marketOrder MarketO
 		return Order{}, err
 	}
 	var order Order
-	return order, c.API.Post(ctx, "/orders/", marketOrder, &order)
+	path := fmt.Sprintf("/%s/", coinbaseproOrders)
+	return order, c.API.Post(ctx, path, marketOrder, &order)
 }
 
 // CancelOrder cancels a previously placed order. orderID is mandatory, productID is optional but will make the request
@@ -519,6 +521,7 @@ func (c *CoinbasePro) CancelOrder(ctx context.Context, spec CancelOrderSpec) (ma
 	if err != nil {
 		return nil, err
 	}
+	//path := fmt.Sprintf("/%s/", coinbaseproOrders)
 	return resp, c.API.Delete(ctx, "/orders/"+core.Query(spec.Params()), nil, &resp)
 }
 
@@ -527,18 +530,21 @@ func (c *CoinbasePro) CancelOrder(ctx context.Context, spec CancelOrderSpec) (ma
 func (c *CoinbasePro) GetOrders(ctx context.Context, filter OrderFilter, pagination PaginationParams) (Orders, error) {
 	params := append(filter.Params(), pagination.Params()...)
 	var orders Orders
-	return orders, c.API.Get(ctx, fmt.Sprintf("/orders/%s", core.Query(params)), &orders)
+	path := fmt.Sprintf("/%s/%s", coinbaseproOrders, core.Query(params))
+	return orders, c.API.Get(ctx, path, &orders)
 }
 
 // GetOrder retrieves the details of a single Order. The requested Order must belong to the current Profile.
 func (c *CoinbasePro) GetOrder(ctx context.Context, orderID string) (Order, error) {
 	var order Order
-	return order, c.API.Get(ctx, fmt.Sprintf("/orders/%s", orderID), &order)
+	path := fmt.Sprintf("/%s/%s", coinbaseproOrders, orderID)
+	return order, c.API.Get(ctx, path, &order)
 }
 
 // GetClientOrder retrieves the details of a single Order using a client-provided identifier.
 // The requested Order must belong to the current Profile.
 func (c *CoinbasePro) GetClientOrder(ctx context.Context, clientID string) (Order, error) {
 	var order Order
+	//path := fmt.Sprintf("/%s/%s", coinbaseproOrders, orderID)
 	return order, c.API.Get(ctx, fmt.Sprintf("/orders/client:%s", clientID), &order)
 }

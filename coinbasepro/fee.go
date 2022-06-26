@@ -1,6 +1,9 @@
 package coinbasepro
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 // Fees describes the current maker & taker fee rates, as well as the 30-day trailing volume.
 // Quoted rates are subject to change.
@@ -15,5 +18,6 @@ type Fees struct {
 // a single object. Perhaps there is a better name.
 func (c *CoinbasePro) GetFees(ctx context.Context) (Fees, error) {
 	var fees Fees
-	return fees, c.API.Get(ctx, "/fees/", &fees)
+	path := fmt.Sprintf("/%s/", coinbaseproFees)
+	return fees, c.API.Get(ctx, path, &fees)
 }

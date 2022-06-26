@@ -23,11 +23,13 @@ type CurrencyDetails map[string]interface{}
 // ListCurrencies retrieves the list of known Currencies. Not all Currencies may be available for trading.
 func (c *CoinbasePro) ListCurrencies(ctx context.Context) ([]Currency, error) {
 	var currencies []Currency
-	return currencies, c.API.Get(ctx, "/currencies/", &currencies)
+	path := fmt.Sprintf("/%s/", coinbaseproCurrencies)
+	return currencies, c.API.Get(ctx, path, &currencies)
 }
 
 // GetCurrency retrieves the details of a specific Currency.
 func (c *CoinbasePro) GetCurrency(ctx context.Context, currencyName CurrencyName) (Currency, error) {
 	var currency Currency
-	return currency, c.API.Get(ctx, fmt.Sprintf("/currencies/%s", currencyName), &currency)
+	path := fmt.Sprintf("/%s/%s/", coinbaseproCurrencies, currencyName)
+	return currency, c.API.Get(ctx, path, &currency)
 }

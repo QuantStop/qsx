@@ -70,5 +70,6 @@ type Fills struct {
 func (c *CoinbasePro) GetFills(ctx context.Context, filter FillFilter, pagination PaginationParams) (Fills, error) {
 	params := append(filter.Params(), pagination.Params()...)
 	var fills Fills
-	return fills, c.API.Get(ctx, fmt.Sprintf("/fills/%s", core.Query(params)), &fills)
+	path := fmt.Sprintf("/%s/%s/", coinbaseproFills, core.Query(params))
+	return fills, c.API.Get(ctx, path, &fills)
 }

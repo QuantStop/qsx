@@ -1,6 +1,9 @@
 package coinbasepro
 
-import "context"
+import (
+	"context"
+	"fmt"
+)
 
 // Limits provide payment method transfer limits, as well as buy/sell limits per currency.
 type Limits struct {
@@ -20,5 +23,6 @@ type Limit struct {
 // GetLimits retrieves the payment method transfer limits and per currency buy/sell limits for the current Profile.
 func (c *CoinbasePro) GetLimits(ctx context.Context) (Limits, error) {
 	var limits Limits
-	return limits, c.API.Get(ctx, "/users/self/exchange-limits/", &limits)
+	path := fmt.Sprintf("/%s/", coinbaseproExchangeLimits)
+	return limits, c.API.Get(ctx, path, &limits)
 }

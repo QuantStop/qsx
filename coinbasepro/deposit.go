@@ -180,7 +180,8 @@ type AddressInfo struct {
 func (c *CoinbasePro) GetDeposits(ctx context.Context, filter DepositFilter, pagination PaginationParams) (Deposits, error) {
 	params := append(filter.Params(), pagination.Params()...)
 	var deposits Deposits
-	err := c.API.Get(ctx, fmt.Sprintf("/transfers/%s", core.Query(params)), &deposits)
+	path := fmt.Sprintf("/%s/%s/", coinbaseproTransfers, core.Query(params))
+	err := c.API.Get(ctx, path, &deposits)
 	if err != nil {
 		return Deposits{}, err
 	}
@@ -202,7 +203,8 @@ func (c *CoinbasePro) GetDeposits(ctx context.Context, filter DepositFilter, pag
 // GetDeposit retrieves the details for a single Deposit. The Deposit must belong to the current Profile.
 func (c *CoinbasePro) GetDeposit(ctx context.Context, depositID string) (Deposit, error) {
 	var deposit Deposit
-	return deposit, c.API.Get(ctx, fmt.Sprintf("/transfers/%s", depositID), &deposit)
+	path := fmt.Sprintf("/%s/%s/", coinbaseproTransfers, depositID)
+	return deposit, c.API.Get(ctx, path, &deposit)
 }
 
 // CreatePaymentMethodDeposit creates a Deposit of funds from an external payment method. Use ListPaymentMethods to
@@ -211,7 +213,8 @@ func (c *CoinbasePro) CreatePaymentMethodDeposit(ctx context.Context, paymentMet
 	result := struct {
 		ID string `json:"id"`
 	}{}
-	err := c.API.Post(ctx, "/deposits/payment-method/", paymentMethodDeposit, &result)
+	path := fmt.Sprintf("/%s/", coinbaseproPaymentMethodDeposit)
+	err := c.API.Post(ctx, path, paymentMethodDeposit, &result)
 	if err != nil {
 		return Deposit{}, err
 	}
@@ -226,7 +229,8 @@ func (c *CoinbasePro) CreateCoinbaseAccountDeposit(ctx context.Context, coinbase
 	result := struct {
 		ID string `json:"id"`
 	}{}
-	err := c.API.Post(ctx, "/deposits/coinbase-account/", coinbaseAccountDeposit, &result)
+	path := fmt.Sprintf("/%s/", coinbaseproDepositCoinbase)
+	err := c.API.Post(ctx, path, coinbaseAccountDeposit, &result)
 	if err != nil {
 		return Deposit{}, err
 	}
@@ -237,11 +241,13 @@ func (c *CoinbasePro) CreateCoinbaseAccountDeposit(ctx context.Context, coinbase
 // CreateCryptoDepositAddress generates an address for crypto deposits into a CoinbaseAccount.
 func (c *CoinbasePro) CreateCryptoDepositAddress(ctx context.Context, coinbaseAccountID string) (CryptoDepositAddress, error) {
 	var cryptoDepositAddress CryptoDepositAddress
-	return cryptoDepositAddress, c.API.Post(ctx, fmt.Sprintf("/coinbase-accounts/%s/addresses/", coinbaseAccountID), nil, &cryptoDepositAddress)
+	path := fmt.Sprintf("/%s/%s/%s/", coinbaseproCoinbaseAccounts, coinbaseAccountID, "addresses")
+	return cryptoDepositAddress, c.API.Post(ctx, path, nil, &cryptoDepositAddress)
 }
 
 // ListPaymentMethods retrieves the list of PaymentMethods available for the current Profile. The list is not paginated.
 func (c *CoinbasePro) ListPaymentMethods(ctx context.Context) ([]PaymentMethod, error) {
 	var paymentMethods []PaymentMethod
-	return paymentMethods, c.API.Get(ctx, "/payment-methods/", &paymentMethods)
+	path := fmt.Sprintf("/%s/", coinbaseproPaymentMethod)
+	return paymentMethods, c.API.Get(ctx, path, &paymentMethods)
 }
