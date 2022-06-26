@@ -40,6 +40,10 @@ const (
 	coinbaseproTransfers               = "transfers"
 	coinbaseproReports                 = "reports"
 	coinbaseproTime                    = "time"
+	coinbaseproFees                    = "fees"
+	coinbaseproConversions             = "conversions"
+	coinbaseproProfiles                = "profiles"
+	coinbaseproProfilesTransfer        = "profiles/transfer"
 	coinbaseproMarginTransfer          = "profiles/margin-transfer"
 	coinbaseproPosition                = "position"
 	coinbaseproPositionClose           = "position/close"
@@ -48,9 +52,12 @@ const (
 	coinbaseproDepositCoinbase         = "deposits/coinbase-account"
 	coinbaseproWithdrawalPaymentMethod = "withdrawals/payment-method"
 	coinbaseproWithdrawalCoinbase      = "withdrawals/coinbase"
+	coinbaseproWithdrawalCoinbaseAcct  = "withdrawals/coinbase-account"
 	coinbaseproWithdrawalCrypto        = "withdrawals/crypto"
+	coinbaseproWithdrawalFeeEstimate   = "withdrawals/fee-estimate"
 	coinbaseproCoinbaseAccounts        = "coinbase-accounts"
 	coinbaseproTrailingVolume          = "users/self/trailing-volume"
+	coinbaseproExchangeLimits          = "users/self/exchange-limits"
 )
 
 type CoinbasePro struct {
