@@ -9,6 +9,7 @@ import (
 	"github.com/quantstop/qsx/yfinance"
 )
 
+// NewExchange creates an exchange connection with the supplied name and config
 func NewExchange(name core.ExchangeName, config *core.Config) (core.Qsx, error) {
 
 	found := false
@@ -48,4 +49,9 @@ func NewExchange(name core.ExchangeName, config *core.Config) (core.Qsx, error) 
 		return nil, errors.New("qsx error: failed to create exchange, unexpected error")
 	}
 
+}
+
+// GetSupportedExchanges returns a list of all the supported exchanges
+func GetSupportedExchanges() []core.ExchangeName {
+	return core.SupportedExchanges
 }
