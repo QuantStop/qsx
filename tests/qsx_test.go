@@ -25,3 +25,9 @@ func TestNewClient(t *testing.T) {
 	}
 
 }
+
+func TestSupportedExchanges(t *testing.T) {
+	for _, x := range qsx.GetSupportedExchanges() {
+		t.Logf("%v\n", x)
+	}
+}
