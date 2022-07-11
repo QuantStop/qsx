@@ -3,7 +3,7 @@ package tdameritrade
 import (
 	"context"
 	"fmt"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 	"time"
 )
 
@@ -189,6 +189,6 @@ func (c ChainsParams) Params() []string {
 
 func (t *TDAmeritrade) GetChains(ctx context.Context, params ChainsParams) (Chains, error) {
 	var res Chains
-	path := fmt.Sprintf("/%s%s", chains, core.Query(params.Params()))
+	path := fmt.Sprintf("/%s%s", chains, exchange.Query(params.Params()))
 	return res, t.API.Get(ctx, path, &res)
 }

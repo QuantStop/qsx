@@ -4,7 +4,7 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 )
 
 // Order
@@ -522,7 +522,7 @@ func (c *CoinbasePro) CancelOrder(ctx context.Context, spec CancelOrderSpec) (ma
 		return nil, err
 	}
 	//path := fmt.Sprintf("/%s/", coinbaseproOrders)
-	return resp, c.API.Delete(ctx, "/orders/"+core.Query(spec.Params()), nil, &resp)
+	return resp, c.API.Delete(ctx, "/orders/"+exchange.Query(spec.Params()), nil, &resp)
 }
 
 // GetOrders retrieves a paginated list of the current open orders for the current Profile. Only open or un-settled
@@ -530,7 +530,7 @@ func (c *CoinbasePro) CancelOrder(ctx context.Context, spec CancelOrderSpec) (ma
 func (c *CoinbasePro) GetOrders(ctx context.Context, filter OrderFilter, pagination PaginationParams) (Orders, error) {
 	params := append(filter.Params(), pagination.Params()...)
 	var orders Orders
-	path := fmt.Sprintf("/%s/%s", coinbaseproOrders, core.Query(params))
+	path := fmt.Sprintf("/%s/%s", coinbaseproOrders, exchange.Query(params))
 	return orders, c.API.Get(ctx, path, &orders)
 }
 

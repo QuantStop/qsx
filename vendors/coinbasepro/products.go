@@ -4,7 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 	"math"
 	"strings"
 	"time"
@@ -336,7 +336,7 @@ func (c *CoinbasePro) GetProduct(ctx context.Context, productID ProductID) (Prod
 // OrderBook. Aggregated levels return only one Size for each active Price (as if there was only a single Order for that Size at the level).
 func (c *CoinbasePro) GetAggregatedOrderBook(ctx context.Context, productID ProductID, level BookLevel) (AggregatedOrderBook, error) {
 	var aggregatedBook AggregatedOrderBook
-	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproOrderbook, core.Query(level.Params()))
+	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproOrderbook, exchange.Query(level.Params()))
 	return aggregatedBook, c.API.Get(ctx, path, &aggregatedBook)
 }
 
@@ -357,7 +357,7 @@ func (c *CoinbasePro) GetProductTicker(ctx context.Context, productID ProductID)
 // GetProductTrades retrieves a paginated list of the last trades of a Product.
 func (c *CoinbasePro) GetProductTrades(ctx context.Context, productID ProductID, pagination PaginationParams) (ProductTrades, error) {
 	var trades ProductTrades
-	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproTrades, core.Query(pagination.Params()))
+	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproTrades, exchange.Query(pagination.Params()))
 	return trades, c.API.Get(ctx, path, &trades)
 }
 
@@ -374,7 +374,7 @@ func (c *CoinbasePro) GetProductStats(ctx context.Context, productID ProductID) 
 //   one minute, five minutes, fifteen minutes, one hour, six hours, or one day.
 func (c *CoinbasePro) GetHistoricRates(ctx context.Context, productID string, filter HistoricRateFilter) (HistoricRates, error) {
 	var history HistoricRates
-	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproHistory, core.Query(filter.Params()))
+	path := fmt.Sprintf("/%s/%s/%s/%s", coinbaseproProducts, productID, coinbaseproHistory, exchange.Query(filter.Params()))
 	if err := c.API.Get(ctx, path, &history); err != nil {
 		return history, err
 	}

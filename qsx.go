@@ -3,17 +3,17 @@ package qsx
 import (
 	"errors"
 	"fmt"
-	"github.com/quantstop/qsx/binance"
-	"github.com/quantstop/qsx/coinbasepro"
-	"github.com/quantstop/qsx/core"
-	"github.com/quantstop/qsx/yfinance"
+	"github.com/quantstop/qsx/exchange"
+	"github.com/quantstop/qsx/vendors/binance"
+	"github.com/quantstop/qsx/vendors/coinbasepro"
+	"github.com/quantstop/qsx/vendors/yfinance"
 )
 
-// NewExchange creates an exchange connection with the supplied name and config
-func NewExchange(name core.ExchangeName, config *core.Config) (core.Qsx, error) {
+// NewExchange creates an exchange connection and returns a struct that implements the IExchange interface
+func NewExchange(name exchange.Name, config *exchange.Config) (exchange.IExchange, error) {
 
 	found := false
-	for _, x := range core.SupportedExchanges {
+	for _, x := range exchange.SupportedExchanges {
 		if x == name {
 			found = true
 			break
@@ -24,21 +24,21 @@ func NewExchange(name core.ExchangeName, config *core.Config) (core.Qsx, error) 
 	}
 
 	switch name {
-	case core.CoinbasePro:
+	case exchange.CoinbasePro:
 		c, err := coinbasepro.NewCoinbasePro(config)
 		if err != nil {
 			return nil, err
 		}
 		return c, nil
 
-	case core.Binance:
+	case exchange.Binance:
 		b, err := binance.NewBinance(config)
 		if err != nil {
 			return nil, err
 		}
 		return b, nil
 
-	case core.YFinance:
+	case exchange.YFinance:
 		b, err := yfinance.NewYFinance(config)
 		if err != nil {
 			return nil, err
@@ -52,6 +52,6 @@ func NewExchange(name core.ExchangeName, config *core.Config) (core.Qsx, error) 
 }
 
 // GetSupportedExchanges returns a list of all the supported exchanges
-func GetSupportedExchanges() []core.ExchangeName {
-	return core.SupportedExchanges
+func GetSupportedExchanges() []exchange.Name {
+	return exchange.SupportedExchanges
 }

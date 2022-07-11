@@ -2,18 +2,18 @@ package coinbasepro
 
 import (
 	"context"
-	"github.com/quantstop/qsx/core"
-	"github.com/quantstop/qsx/core/orderbook"
+	"github.com/quantstop/qsx/exchange"
+	"github.com/quantstop/qsx/exchange/orderbook"
 	"sync"
 	"time"
 )
 
-// This file holds all methods that implement the main Qsx interface.
+// This file holds all methods that implement the main IExchange interface.
 // This is served as an adapter to the Coinbase client, which adheres strictly to the Coinbase API.
-// Here is where the data is formatted into the common type defined by Qsx.
+// Here is where the data is formatted into the common type defined by IExchange.
 
-func (c *CoinbasePro) GetHistoricalCandles(ctx context.Context, productID string, granularity string) ([]core.Candle, error) {
-	var candles []core.Candle
+func (c *CoinbasePro) GetHistoricalCandles(ctx context.Context, productID string, granularity string) ([]exchange.Candle, error) {
+	var candles []exchange.Candle
 
 	g := TimePeriod1Minute
 	switch granularity {
@@ -44,7 +44,7 @@ func (c *CoinbasePro) GetHistoricalCandles(ctx context.Context, productID string
 	}
 
 	for _, cbCandle := range coinbaseCandles.Candles {
-		candles = append(candles, core.Candle{
+		candles = append(candles, exchange.Candle{
 			Close:  cbCandle.Close,
 			High:   cbCandle.High,
 			Low:    cbCandle.Low,
@@ -193,14 +193,14 @@ func (c *CoinbasePro) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, prod
 	return c.Watch(shutdown, wg, subReq, feed.(*Feed))
 }
 
-func (c *CoinbasePro) ListProducts(ctx context.Context) ([]core.Product, error) {
+func (c *CoinbasePro) ListProducts(ctx context.Context) ([]exchange.Product, error) {
 	products, err := c.ListCoinbaseProducts(ctx)
 	if err != nil {
 		return nil, err
 	}
-	var returnArr []core.Product
+	var returnArr []exchange.Product
 	for _, product := range products {
-		returnArr = append(returnArr, core.Product{
+		returnArr = append(returnArr, exchange.Product{
 			ID:             product.ID,
 			BaseCurrency:   string(product.BaseCurrency),
 			QuoteCurrency:  string(product.QuoteCurrency),

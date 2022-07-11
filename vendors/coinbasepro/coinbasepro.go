@@ -5,7 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/gorilla/websocket"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 	"golang.org/x/time/rate"
 	"net/http"
 	"strconv"
@@ -61,11 +61,11 @@ const (
 )
 
 type CoinbasePro struct {
-	core.Exchange
+	exchange.Exchange
 	Conn *websocket.Conn
 }
 
-func NewCoinbasePro(config *core.Config) (core.Qsx, error) {
+func NewCoinbasePro(config *exchange.Config) (exchange.IExchange, error) {
 
 	t := transport{
 		authKey:        config.Key,
@@ -78,50 +78,50 @@ func NewCoinbasePro(config *core.Config) (core.Qsx, error) {
 
 	rl := rate.NewLimiter(rate.Every(time.Second), 10) // 10 requests per second
 
-	var api *core.Client
-	var ws *core.Dialer
+	var api *exchange.Client
+	var ws *exchange.Dialer
 
 	if config.Sandbox {
-		api = core.New(
+		api = exchange.New(
 			&http.Client{
 				Transport:     &t,
 				CheckRedirect: nil,
 				Jar:           nil,
 				Timeout:       0,
 			},
-			core.Options{
+			exchange.Options{
 				ApiURL:  coinbaseproSandboxRestAPIURL,
 				Verbose: false,
 			},
 			rl,
 		)
 
-		ws = &core.Dialer{
+		ws = &exchange.Dialer{
 			URL: coinbaseproSandboxWebsocketURL,
 		}
 	} else {
-		api = core.New(
+		api = exchange.New(
 			&http.Client{
 				Transport:     &t,
 				CheckRedirect: nil,
 				Jar:           nil,
 				Timeout:       0,
 			},
-			core.Options{
+			exchange.Options{
 				ApiURL:  coinbaseproAPIURL,
 				Verbose: false,
 			},
 			rl,
 		)
 
-		ws = &core.Dialer{
+		ws = &exchange.Dialer{
 			URL: coinbaseproWebsocketURL,
 		}
 	}
 
 	return &CoinbasePro{
-		core.Exchange{
-			Name:      core.CoinbasePro,
+		exchange.Exchange{
+			Name:      exchange.CoinbasePro,
 			Crypto:    true,
 			Auth:      config.Auth,
 			API:       api,
@@ -149,7 +149,7 @@ func (t *transport) RoundTrip(req *http.Request) (*http.Response, error) {
 	}
 	timestamp := t.timestamp()
 	msg := fmt.Sprintf("%s%s%s%s", timestamp, req.Method, req.URL, b.Bytes())
-	signature, err := core.SignSHA256HMAC(msg, t.authSecret)
+	signature, err := exchange.SignSHA256HMAC(msg, t.authSecret)
 	if err != nil {
 		return nil, fmt.Errorf("qsx coinbase: error signing content: %w", err)
 	}

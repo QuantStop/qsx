@@ -2,8 +2,8 @@ package yfinance
 
 import (
 	"context"
-	"github.com/quantstop/qsx/core"
-	"github.com/quantstop/qsx/core/orderbook"
+	"github.com/quantstop/qsx/exchange"
+	"github.com/quantstop/qsx/exchange/orderbook"
 	"golang.org/x/time/rate"
 	"net/http"
 	"sync"
@@ -11,21 +11,21 @@ import (
 )
 
 type YFinance struct {
-	core.Exchange
+	exchange.Exchange
 }
 
-func NewYFinance(config *core.Config) (core.Qsx, error) {
+func NewYFinance(config *exchange.Config) (exchange.IExchange, error) {
 
 	rl := rate.NewLimiter(rate.Every(time.Second), 10) // 10 requests per second
 
-	api := core.New(
+	api := exchange.New(
 		&http.Client{
 			Transport:     nil,
 			CheckRedirect: nil,
 			Jar:           nil,
 			Timeout:       0,
 		},
-		core.Options{
+		exchange.Options{
 			ApiURL:  "",
 			Verbose: false,
 		},
@@ -33,15 +33,15 @@ func NewYFinance(config *core.Config) (core.Qsx, error) {
 	)
 
 	return &YFinance{
-		core.Exchange{
-			Name: core.YFinance,
+		exchange.Exchange{
+			Name: exchange.YFinance,
 			Auth: config.Auth,
 			API:  api,
 		},
 	}, nil
 }
 
-func (y *YFinance) GetHistoricalCandles(ctx context.Context, productID string, granularity string) ([]core.Candle, error) {
+func (y *YFinance) GetHistoricalCandles(ctx context.Context, productID string, granularity string) ([]exchange.Candle, error) {
 	return nil, nil
 }
 
@@ -49,6 +49,6 @@ func (y *YFinance) WatchFeed(shutdown chan struct{}, wg *sync.WaitGroup, product
 	return nil, nil
 }
 
-func (y *YFinance) ListProducts(ctx context.Context) ([]core.Product, error) {
+func (y *YFinance) ListProducts(ctx context.Context) ([]exchange.Product, error) {
 	return nil, nil
 }

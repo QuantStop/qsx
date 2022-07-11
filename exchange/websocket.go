@@ -1,4 +1,4 @@
-package core
+package exchange
 
 import (
 	"github.com/gorilla/websocket"

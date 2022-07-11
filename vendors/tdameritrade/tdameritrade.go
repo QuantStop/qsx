@@ -2,7 +2,7 @@ package tdameritrade
 
 import (
 	"context"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 	"golang.org/x/oauth2"
 	"golang.org/x/time/rate"
 	"net/http"
@@ -33,10 +33,10 @@ var (
 )
 
 type TDAmeritrade struct {
-	core.Exchange
+	exchange.Exchange
 }
 
-func NewTDAmeritrade(config *core.Config) (core.Qsx, error) {
+func NewTDAmeritrade(config *exchange.Config) (exchange.IExchange, error) {
 
 	httpClient := authConfig.Client(
 		context.WithValue(context.Background(), oauth2.HTTPClient, &http.Client{Transport: &transport{}}),
@@ -45,9 +45,9 @@ func NewTDAmeritrade(config *core.Config) (core.Qsx, error) {
 
 	rl := rate.NewLimiter(rate.Every(time.Second), 10) // 10 requests per second
 
-	api := core.New(
+	api := exchange.New(
 		httpClient,
-		core.Options{
+		exchange.Options{
 			ApiURL:  apiURL,
 			Verbose: false,
 		},
@@ -55,8 +55,8 @@ func NewTDAmeritrade(config *core.Config) (core.Qsx, error) {
 	)
 
 	return &TDAmeritrade{
-		core.Exchange{
-			Name: core.TDAmeritrade,
+		exchange.Exchange{
+			Name: exchange.TDAmeritrade,
 			Auth: config.Auth,
 			API:  api,
 		},

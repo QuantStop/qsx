@@ -3,7 +3,7 @@ package binance
 import (
 	"context"
 	"fmt"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 	"time"
 )
 
@@ -48,7 +48,7 @@ func (h *KLineParameters) Params() []string {
 
 func (b *Binance) GetKlineData(ctx context.Context, params KLineParameters) (KLineResponse, error) {
 	var res KLineResponse
-	path := fmt.Sprintf("/%s/%s", candleStick, core.Query(params.Params()))
+	path := fmt.Sprintf("/%s/%s", candleStick, exchange.Query(params.Params()))
 	if err := b.API.Get(ctx, path, &res); err != nil {
 		return res, err
 	}

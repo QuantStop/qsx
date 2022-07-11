@@ -3,7 +3,7 @@ package coinbasepro
 import (
 	"context"
 	"fmt"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 )
 
 // Withdrawal represents a movement of CurrencyName out of accounts to both external and internal destinations.
@@ -251,7 +251,7 @@ type WithdrawalFeeEstimate struct {
 func (c *CoinbasePro) GetWithdrawals(ctx context.Context, filter WithdrawalFilter, pagination PaginationParams) (Withdrawals, error) {
 	params := append(filter.Params(), pagination.Params()...)
 	var withdrawals Withdrawals
-	path := fmt.Sprintf("/%s/%s", coinbaseproTransfers, core.Query(params))
+	path := fmt.Sprintf("/%s/%s", coinbaseproTransfers, exchange.Query(params))
 	err := c.API.Get(ctx, path, &withdrawals)
 	if err != nil {
 		return Withdrawals{}, err
@@ -326,6 +326,6 @@ func (c *CoinbasePro) CreateCryptoAddressWithdrawal(ctx context.Context, cryptoA
 // GetWithdrawalFeeEstimate retrieves the estimated network fees that would apply when sending to the given address.
 func (c *CoinbasePro) GetWithdrawalFeeEstimate(ctx context.Context, cryptoAddress CryptoAddress) (WithdrawalFeeEstimate, error) {
 	var withdrawalFeeEstimate WithdrawalFeeEstimate
-	path := fmt.Sprintf("/%s/%s", coinbaseproWithdrawalFeeEstimate, core.Query(cryptoAddress.Params()))
+	path := fmt.Sprintf("/%s/%s", coinbaseproWithdrawalFeeEstimate, exchange.Query(cryptoAddress.Params()))
 	return withdrawalFeeEstimate, c.API.Get(ctx, path, &withdrawalFeeEstimate)
 }

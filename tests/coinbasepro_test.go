@@ -4,8 +4,8 @@ import (
 	"context"
 	"fmt"
 	"github.com/quantstop/qsx"
-	"github.com/quantstop/qsx/coinbasepro"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
+	"github.com/quantstop/qsx/vendors/coinbasepro"
 	"golang.org/x/sync/errgroup"
 	"sync"
 	"testing"
@@ -15,15 +15,15 @@ var cbpKey = ""
 var cbpPass = ""
 var cbpSecret = ""
 
-var CoinbaseproClient core.Qsx
+var CoinbaseproClient exchange.IExchange
 var err error
 
 func TestCoinbaseClient(t *testing.T) {
-	config := &core.Config{
-		Auth:    core.NewAuth(cbpKey, cbpPass, cbpSecret),
+	config := &exchange.Config{
+		Auth:    exchange.NewAuth(cbpKey, cbpPass, cbpSecret),
 		Sandbox: true,
 	}
-	CoinbaseproClient, err = qsx.NewExchange("coinbasepro", config)
+	CoinbaseproClient, err = qsx.NewExchange(exchange.CoinbasePro, config)
 	if err != nil {
 		t.Error(err)
 	}

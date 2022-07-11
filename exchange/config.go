@@ -1,4 +1,4 @@
-package core
+package exchange
 
 type Config struct {
 	*Auth

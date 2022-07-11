@@ -1,4 +1,4 @@
-package core
+package exchange
 
 // Product
 // Only a maximum of one of trading_disabled, cancel_only, post_only, limit_only can be true at once. If none are true,

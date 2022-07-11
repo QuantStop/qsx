@@ -3,7 +3,7 @@ package coinbasepro
 import (
 	"context"
 	"fmt"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 )
 
 type Profile struct {
@@ -45,7 +45,7 @@ type ProfileTransfer struct {
 // The list is not paginated.
 func (c *CoinbasePro) ListProfiles(ctx context.Context, filter ProfileFilter) ([]Profile, error) {
 	var profiles []Profile
-	path := fmt.Sprintf("/%s/%s/", coinbaseproProfiles, core.Query(filter.Params()))
+	path := fmt.Sprintf("/%s/%s/", coinbaseproProfiles, exchange.Query(filter.Params()))
 	return profiles, c.API.Get(ctx, path, &profiles)
 }
 

@@ -3,7 +3,7 @@ package coinbasepro
 import (
 	"context"
 	"fmt"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 )
 
 // Deposit represents the movement of Currency into accounts from both external and internal sources.
@@ -180,7 +180,7 @@ type AddressInfo struct {
 func (c *CoinbasePro) GetDeposits(ctx context.Context, filter DepositFilter, pagination PaginationParams) (Deposits, error) {
 	params := append(filter.Params(), pagination.Params()...)
 	var deposits Deposits
-	path := fmt.Sprintf("/%s/%s/", coinbaseproTransfers, core.Query(params))
+	path := fmt.Sprintf("/%s/%s/", coinbaseproTransfers, exchange.Query(params))
 	err := c.API.Get(ctx, path, &deposits)
 	if err != nil {
 		return Deposits{}, err

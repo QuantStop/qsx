@@ -4,7 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"github.com/gorilla/websocket"
-	"github.com/quantstop/qsx/core/orderbook"
+	"github.com/quantstop/qsx/exchange/orderbook"
 	"log"
 	"strconv"
 	"sync"

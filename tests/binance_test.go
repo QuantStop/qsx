@@ -3,7 +3,7 @@ package tests
 import (
 	"context"
 	"github.com/quantstop/qsx"
-	"github.com/quantstop/qsx/core"
+	"github.com/quantstop/qsx/exchange"
 	"testing"
 )
 
@@ -11,11 +11,11 @@ var binanceKey = ""
 var binancePass = ""
 var binanceSecret = ""
 
-var BinanceClient core.Qsx
+var BinanceClient exchange.IExchange
 
 func TestBinanceClient(t *testing.T) {
-	config := &core.Config{
-		Auth:    core.NewAuth(binanceKey, binancePass, binanceSecret),
+	config := &exchange.Config{
+		Auth:    exchange.NewAuth(binanceKey, binancePass, binanceSecret),
 		Sandbox: true,
 	}
 	BinanceClient, err = qsx.NewExchange("binance", config)
